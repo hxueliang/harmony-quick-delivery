@@ -1,5 +1,7 @@
 import { TabModel } from '@hxl/basic/Index'
 
+import { My } from './'
+
 @Entry
 @Component
 struct Main {
@@ -45,7 +47,7 @@ struct Main {
             Text("消息组件")
           }
           else {
-            Text("我的组件")
+            My()
           }
         }.tabBar(this.getTabBar(item))
       })
