@@ -1,4 +1,5 @@
-import { AdStore, AdvertModel } from '@hxl/basic/Index'
+import { AdStore, AdvertModel, OPEN_SUB_WINDOW_KEY } from '@hxl/basic/Index'
+import { window } from '@kit.ArkUI'
 
 @Entry
 @Component
@@ -16,7 +17,12 @@ struct StartAd {
   }
 
   aboutToDisappear(): void {
-    clearTimeout(this.timer)
+    clearInterval(this.timer)
+  }
+
+  closeWin() {
+    const win = window.findWindow(OPEN_SUB_WINDOW_KEY) // 找到子窗口
+    win.destroyWindow() // 销毁窗口
   }
 
   async getStartAd() {
@@ -24,6 +30,7 @@ struct StartAd {
     this.timer = setInterval(() => {
       if(this.adObj.adTime === 0) {
         clearInterval(this.timer)
+        this.closeWin()
         return
       }
       this.adObj.adTime--
@@ -41,6 +48,9 @@ struct StartAd {
         .borderRadius(15)
         .backgroundColor($r("app.color.background_page"))
         .textAlign(TextAlign.Center)
+        .onClick(() => {
+          this.closeWin()
+        })
     }.height('100%').width('100%')
   }
 }
