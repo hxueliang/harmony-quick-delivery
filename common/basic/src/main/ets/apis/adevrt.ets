@@ -3,9 +3,11 @@ import { AdvertModel } from '../models'
 
 export function getStartAd() {
   return new Promise<AdvertModel>((resolve, reject) => {
-    DEFAULT_AD.adTime = 2
+    // DEFAULT_AD.adTime = 2
+    const ad = JSON.parse(JSON.stringify(DEFAULT_AD) as string) as AdvertModel
+    ad.adTime = 2
     setTimeout(() => {
-      resolve(DEFAULT_AD)
+      resolve(ad)
     }, 500)
   })
 }

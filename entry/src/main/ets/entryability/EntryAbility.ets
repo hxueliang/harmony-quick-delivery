@@ -1,7 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { getStartAd, OPEN_SUB_WINDOW_KEY } from '@hxl/basic/Index';
+import { AdStore, getStartAd, OPEN_SUB_WINDOW_KEY } from '@hxl/basic/Index';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -16,7 +16,7 @@ export default class EntryAbility extends UIAbility {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
-    await showStartAd(windowStage)
+    await showStartAd(windowStage, this.context)
 
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
@@ -43,8 +43,10 @@ export default class EntryAbility extends UIAbility {
   }
 }
 
-async function showStartAd(windowStage: window.WindowStage) {
+async function showStartAd(windowStage: window.WindowStage, ctx: Context) {
+  const adStore = new AdStore(ctx)
   const ad = await getStartAd()
+  await adStore.setStartAd(ad) // 写入首选项
   const win = await windowStage.createSubWindow(OPEN_SUB_WINDOW_KEY)
   await win.showWindow()
   win.setUIContent('pages/StartAd/StartAd')
