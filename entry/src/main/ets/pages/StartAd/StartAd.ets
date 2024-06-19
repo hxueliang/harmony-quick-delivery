@@ -1,10 +1,39 @@
+import { AdStore, AdvertModel } from '@hxl/basic/Index'
+
 @Entry
 @Component
 struct StartAd {
+  @State
+  adObj: AdvertModel  = {
+    showAd: false,
+    adTime: 0
+  }
+  adStore: AdStore = new AdStore(getContext())
+  timer: number = -1
+
+  async aboutToAppear() {
+    this.getStartAd()
+  }
+
+  aboutToDisappear(): void {
+    clearTimeout(this.timer)
+  }
+
+  async getStartAd() {
+    this.adObj = await this.adStore.getStartAd()
+    this.timer = setInterval(() => {
+      if(this.adObj.adTime === 0) {
+        clearInterval(this.timer)
+        return
+      }
+      this.adObj.adTime--
+    }, 1000)
+  }
+
   build() {
     Stack({ alignContent: Alignment.TopEnd }) {
-      Image($r('app.media.background')).objectFit(ImageFit.Cover)
-      Text(`5秒后跳过`)
+      Image(this.adObj.adImg).objectFit(ImageFit.Cover)
+      Text(`${this.adObj.adTime}秒后跳过`)
         .padding({ left: 10, right: 10 })
         .margin({ right: 20, top: 20 })
         .height(30)
@@ -12,7 +41,6 @@ struct StartAd {
         .borderRadius(15)
         .backgroundColor($r("app.color.background_page"))
         .textAlign(TextAlign.Center)
-
     }.height('100%').width('100%')
   }
 }
