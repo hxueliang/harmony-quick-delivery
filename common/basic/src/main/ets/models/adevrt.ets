@@ -1,5 +1,5 @@
 /**
- * 广告接口
+ * 广告类
  */
 export class AdvertModel {
   /** 显示广告 */
