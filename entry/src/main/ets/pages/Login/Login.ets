@@ -41,7 +41,7 @@ struct Login {
     await new TokenStore(getContext()).setToken(token)
     AppStorage.set(TOKEN_KEY, token)
     promptAction.showToast({ message: '登录成功' })
-    router.replaceUrl({ url: 'pages/Index' })
+    router.replaceUrl({ url: 'pages/Main/Main' })
   }
 
   build() {

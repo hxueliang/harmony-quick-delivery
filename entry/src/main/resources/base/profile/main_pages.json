@@ -1,6 +1,6 @@
 {
   "src": [
-    "pages/Index",
+    "pages/Main/Main",
     "pages/StartAd/StartAd",
     "pages/Login/Login"
   ]
