@@ -1,7 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { getStartAd } from '@hxl/basic/Index';
+import { getStartAd, OPEN_SUB_WINDOW_KEY } from '@hxl/basic/Index';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -12,13 +12,13 @@ export default class EntryAbility extends UIAbility {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
-  onWindowStageCreate(windowStage: window.WindowStage): void {
+  async onWindowStageCreate(windowStage: window.WindowStage): Promise<void> {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
-    showStartAd()
+    await showStartAd(windowStage)
 
-    windowStage.loadContent('pages/StartAd/StartAd', (err) => {
+    windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
         hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
         return;
@@ -43,7 +43,9 @@ export default class EntryAbility extends UIAbility {
   }
 }
 
-async function showStartAd() {
+async function showStartAd(windowStage: window.WindowStage) {
   const ad = await getStartAd()
-  AlertDialog.show({ message: JSON.stringify(ad) })
+  const win = await windowStage.createSubWindow(OPEN_SUB_WINDOW_KEY)
+  await win.showWindow()
+  win.setUIContent('pages/StartAd/StartAd')
 }
