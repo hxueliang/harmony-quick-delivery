@@ -1,7 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { AdStore, getStartAd, OPEN_SUB_WINDOW_KEY } from '@hxl/basic/Index';
+import { AdStore, getStartAd, OPEN_SUB_WINDOW_KEY, UserInfoStore, USER_TOKEN_KEY } from '@hxl/basic/Index';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -18,7 +18,7 @@ export default class EntryAbility extends UIAbility {
 
     await showStartAd(windowStage, this.context)
 
-    windowStage.loadContent('pages/Index', (err) => {
+    windowStage.loadContent(await getLoadUrl(this.context), (err) => {
       if (err.code) {
         hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
         return;
@@ -50,4 +50,20 @@ async function showStartAd(windowStage: window.WindowStage, ctx: Context) {
   const win = await windowStage.createSubWindow(OPEN_SUB_WINDOW_KEY)
   await win.showWindow()
   win.setUIContent('pages/StartAd/StartAd')
+}
+
+/**
+ * 获取加载的页面url
+ * @param cxt
+ * @returns
+ */
+async function getLoadUrl(cxt: Context) {
+  let url = 'pages/Login/Login'
+  const userInfoStore = new UserInfoStore(cxt)
+  const token = userInfoStore.getToken()
+  if(token) {
+    AppStorage.setOrCreate(USER_TOKEN_KEY, token)
+    url='pages/Index'
+  }
+  return url
 }
