@@ -1,4 +1,7 @@
+import { TokenStore, TOKEN_KEY } from '@hxl/basic/Index'
+import { login } from '../../apis'
 import { LoginForm, LoginFormModel } from '../../models'
+import { promptAction, router } from '@kit.ArkUI'
 
 @Entry
 @Component
@@ -6,10 +9,16 @@ struct Login {
   @State
   loading: boolean = false
   @State
-  loginForm: LoginFormModel = new LoginFormModel({} as LoginForm)
+  loginForm: LoginFormModel = new LoginFormModel({
+    account: '13512341234',
+    password: '123456'
+  } as LoginForm)
 
   getBtnEnabled() {
     if (!this.loginForm.account || !this.loginForm.password) {
+      return false
+    }
+    if (this.loading) {
       return false
     }
     // Todo: 其它效验
@@ -23,6 +32,16 @@ struct Login {
     .width('100%')
     .height(58)
     .borderRadius(0)
+  }
+
+  async login() {
+    this.loading = true
+    const token = await login(this.loginForm)
+    this.loading = false
+    await new TokenStore(getContext()).setToken(token)
+    AppStorage.set(TOKEN_KEY, token)
+    promptAction.showToast({ message: '登录成功' })
+    router.replaceUrl({ url: 'pages/Index' })
   }
 
   build() {
@@ -56,6 +75,9 @@ struct Login {
         .onChange((value) => {
           this.loginForm.password = value
         })
+        .onSubmit(() => {
+          this.login()
+        })
 
       // 登录按钮
       Button({ type: ButtonType.Capsule }) {
@@ -71,6 +93,9 @@ struct Login {
       .height(50)
       .margin({ top: 50 })
       .enabled(this.getBtnEnabled())
+      .onClick(() => {
+        this.login()
+      })
     }
     .padding({ left: 32, right: 32 })
     .margin({ top: 40 })
