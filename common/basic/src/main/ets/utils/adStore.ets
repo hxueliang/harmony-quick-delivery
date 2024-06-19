@@ -1,13 +1,7 @@
 import { preferences } from '@kit.ArkData'
 
-import { AD_STORE_KEY, START_AD_KEY } from '../constants'
+import { AD_STORE_KEY, DEFAULT_AD, START_AD_KEY } from '../constants'
 import { AdvertModel } from '../models'
-
-const DEFAULT_AD: AdvertModel = {
-  showAd: false,
-  adTime: 5,
-  adImg: $r("app.media.start"),
-}
 
 /** 广告仓库 */
 export class AdStore {

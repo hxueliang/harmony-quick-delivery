@@ -1,1 +1,1 @@
-export * from './adStoreKey'
+export * from './adevrt'
