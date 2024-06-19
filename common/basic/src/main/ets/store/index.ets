@@ -1,3 +1,3 @@
 export * from './adevrt'
 
-export * from './userInfo'
+export * from './token'

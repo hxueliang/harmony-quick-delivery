@@ -1,7 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { AdStore, getStartAd, OPEN_SUB_WINDOW_KEY, UserInfoStore, USER_TOKEN_KEY } from '@hxl/basic/Index';
+import { AdStore, getStartAd, OPEN_SUB_WINDOW_KEY, TokenStore, TOKEN_KEY } from '@hxl/basic/Index';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -59,11 +59,11 @@ async function showStartAd(windowStage: window.WindowStage, ctx: Context) {
  */
 async function getLoadUrl(cxt: Context) {
   let url = 'pages/Login/Login'
-  const userInfoStore = new UserInfoStore(cxt)
-  const token = userInfoStore.getToken()
-  if(token) {
-    AppStorage.setOrCreate(USER_TOKEN_KEY, token)
-    url='pages/Index'
+  const tokenStore = new TokenStore(cxt)
+  const token = tokenStore.getToken()
+  if (token) {
+    AppStorage.setOrCreate(TOKEN_KEY, token)
+    url = 'pages/Index'
   }
   return url
 }
