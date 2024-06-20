@@ -6,6 +6,9 @@ import { getUserInfo, getUserTaskInfo } from '../../../apis'
 @Preview
 @Component
 struct My {
+  @Consume
+  @Watch('changeCurrent')
+  currentName: string
   @State
   userInfo: UserInfoModel = new UserInfoModel({} as UserInfo)
   @State
@@ -13,7 +16,12 @@ struct My {
 
   aboutToAppear(): void {
     this.getUserInfo()
-    this.getUserTaskInfo()
+  }
+
+  changeCurrent() {
+    if (this.currentName === 'my') {
+      this.getUserTaskInfo()
+    }
   }
 
   async getUserInfo() {

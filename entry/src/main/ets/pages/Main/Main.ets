@@ -6,6 +6,7 @@ import { My } from './'
 @Component
 struct Main {
   @State
+  @Watch('changeCurrent')
   currentIndex: number = 0
   tabsData: TabModel[] = [{
     title: '任务',
@@ -20,6 +21,12 @@ struct Main {
     name: 'my',
     icon: $r("app.media.ic_tab_btn_mine_nor")
   }]
+  @Provide
+  currentName: string = this.tabsData[this.currentIndex].name
+
+  changeCurrent() {
+    this.currentName = this.tabsData[this.currentIndex].name
+  }
 
   @Builder
   getTabBar(item: TabModel) {
