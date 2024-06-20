@@ -1,5 +1,7 @@
 export * from './src/main/ets/apis'
 
+export * from './src/main/ets/components'
+
 export * from './src/main/ets/constants'
 
 export * from './src/main/ets/models'
