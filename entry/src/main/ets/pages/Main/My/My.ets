@@ -1,19 +1,32 @@
-import { HxlCard, HxlCardItem } from '@hxl/basic/Index'
-import { UserInfo, UserInfoModel } from '../../../models'
-import { getUserInfo } from '../../../apis'
+import { HxlCard, HxlCardItem, KeyValue } from '@hxl/basic/Index'
+
+import { UserInfo, UserInfoModel, UserTaskInfo, UserTaskInfoModel, UserTaskInfoParam } from '../../../models'
+import { getUserInfo, getUserTaskInfo } from '../../../apis'
 
 @Preview
 @Component
 struct My {
   @State
   userInfo: UserInfoModel = new UserInfoModel({} as UserInfo)
+  @State
+  userTaskInfo: UserTaskInfoModel = new UserTaskInfoModel({} as UserTaskInfo)
 
   aboutToAppear(): void {
     this.getUserInfo()
+    this.getUserTaskInfo()
   }
 
   async getUserInfo() {
     this.userInfo = await getUserInfo()
+  }
+
+  async getUserTaskInfo() {
+    const date = new Date()
+    const param: UserTaskInfoParam = {
+      year: date.getFullYear().toString().padStart(2, '0'),
+      month: (date.getMonth() + 1).toString().padStart(2, '0')
+    }
+    this.userTaskInfo = await getUserTaskInfo(param)
   }
 
   @Builder
@@ -59,9 +72,18 @@ struct My {
         .fontColor($r('app.color.text_secondary'))
         .lineHeight(20)
       Row() {
-        this.getTaskItemUI(1000, '任务总量')
-        this.getTaskItemUI(1000, '完成任务量')
-        this.getTaskItemUI(1000, '运输里程(km)')
+        this.getTaskItemUI({
+          label: '任务总量',
+          value: this.userTaskInfo.taskAmounts,
+        })
+        this.getTaskItemUI({
+          label: '完成任务量',
+          value: this.userTaskInfo.completedAmounts,
+        })
+        this.getTaskItemUI({
+          label: '运输里程(km)',
+          value: this.userTaskInfo.transportMileage,
+        })
       }
       .width('100%')
       .layoutWeight(1)
@@ -75,14 +97,14 @@ struct My {
   }
 
   @Builder
-  getTaskItemUI(value: number, label: string) {
+  getTaskItemUI($$: KeyValue<number>) {
     Column() {
-      Text(value?.toString() || '')
+      Text($$.value?.toString() || '0')
         .fontSize(18)
         .fontColor($r('app.color.text_primary'))
         .lineHeight(25)
         .margin({ bottom: 17 })
-      Text(label)
+      Text($$.label)
         .fontSize(12)
         .fontColor($r('app.color.text_primary'))
         .lineHeight(17)
