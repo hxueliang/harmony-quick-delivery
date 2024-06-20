@@ -61,8 +61,8 @@ async function getLoadUrl(cxt: Context) {
   let url = 'pages/Login/Login'
   const tokenStore = new TokenStore(cxt)
   const token = tokenStore.getToken()
+  AppStorage.setOrCreate(TOKEN_KEY, token)
   if (token) {
-    AppStorage.setOrCreate(TOKEN_KEY, token)
     url = 'pages/Main/Main'
   }
   return url
