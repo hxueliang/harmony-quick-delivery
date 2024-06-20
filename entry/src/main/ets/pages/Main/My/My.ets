@@ -1,29 +1,42 @@
 import { HxlCard, HxlCardItem } from '@hxl/basic/Index'
+import { UserInfo, UserInfoModel } from '../../../models'
+import { getUserInfo } from '../../../apis'
 
 @Preview
 @Component
 struct My {
+  @State
+  userInfo: UserInfoModel = new UserInfoModel({} as UserInfo)
+
+  aboutToAppear(): void {
+    this.getUserInfo()
+  }
+
+  async getUserInfo() {
+    this.userInfo = await getUserInfo()
+  }
+
   build() {
     Column() {
       // 基本信息
       Column() {
-        Image($r('app.media.ic_avatar_driver'))
+        Image(this.userInfo.avatar)
           .width(67)
           .height(67)
           .borderRadius(34.5)
           .backgroundColor($r('app.color.white'))
-        Text('司机')
+        Text(this.userInfo.name || '')
           .fontSize(18)
           .fontWeight(600)
           .lineHeight(25)
           .margin({ top: 9, bottom: 9 })
           .fontColor($r('app.color.white'))
-        Text(`司机编号: 66666666`)
+        Text(`司机编号: ${this.userInfo.number || ''}`)
           .fontSize(14)
           .fontWeight(400)
           .lineHeight(20)
           .fontColor($r('app.color.white'))
-        Text(`手机号: 13812345678`)
+        Text(`手机号: ${this.userInfo.phone || ''}`)
           .fontSize(14)
           .fontWeight(400)
           .lineHeight(20)
