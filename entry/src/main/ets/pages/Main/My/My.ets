@@ -1,4 +1,5 @@
 import { HxlCard, HxlCardItem, KeyValue } from '@hxl/basic/Index'
+import { router } from '@kit.ArkUI'
 
 import { UserInfo, UserInfoModel, UserTaskInfo, UserTaskInfoModel, UserTaskInfoParam } from '../../../models'
 import { getUserInfo, getUserTaskInfo } from '../../../apis'
@@ -130,6 +131,9 @@ struct My {
         label: '系统设置',
         showLine: false,
         onClink: () => {
+          router.pushUrl({
+            url: 'pages/Setting/Setting'
+          })
         }
       })
     }
