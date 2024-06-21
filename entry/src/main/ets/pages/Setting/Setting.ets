@@ -1,8 +1,48 @@
-import { HxlCard, HxlCardItem, HxlNavBar } from '@hxl/basic/Index'
+import { HxlCard, HxlCardItem, HxlConfirm, HxlNavBar, TokenStore, TOKEN_KEY } from '@hxl/basic/Index'
+import { promptAction, router } from '@kit.ArkUI'
+
+import { getUserTaskInfo } from '../../apis'
 
 @Entry
 @Component
 struct Setting {
+  confirm: CustomDialogController = new CustomDialogController({
+    builder: HxlConfirm({
+      message: '确认要退出吗？',
+      buttons: [{
+        title: '取消',
+      }, {
+        title: '确认',
+        fontColor: $r('app.color.primary'),
+        action: async () => {
+          await this.logoutApi()
+        }
+      }]
+    }),
+    customStyle: true,
+    alignment: DialogAlignment.Center,
+    autoCancel: false,
+  })
+
+  async logoutApi() {
+    // 模似成功接口-失败
+    // return new Promise<boolean>((resolve, reject) => {
+    //   setTimeout(() => {
+    //     reject(new Error('退出登录失败'))
+    //   }, 1000)
+    // })
+
+    // 模似成功接口-成功
+    await getUserTaskInfo({
+      year: new Date().getFullYear().toString().padStart(2, '0'),
+      month: (new Date().getMonth() + 1).toString().padStart(2, '0')
+    })
+    promptAction.showToast({ message: '【模拟接口】退出成功' })
+    AppStorage.set(TOKEN_KEY, '')
+    new TokenStore(getContext()).setToken('')
+    router.pushUrl({ url: 'pages/Login/Login' })
+  }
+
   @Builder
   getListUI() {
     Column() {
@@ -28,6 +68,7 @@ struct Setting {
         .type(ButtonType.Normal)
         .borderRadius(8)
         .onClick(() => {
+          this.confirm.open()
         })
     }
     .padding({ right: 16, left: 16 })
