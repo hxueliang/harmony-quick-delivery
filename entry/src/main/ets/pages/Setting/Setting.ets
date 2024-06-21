@@ -1,4 +1,4 @@
-import { HxlCard, HxlCardItem } from '@hxl/basic/Index'
+import { HxlCard, HxlCardItem, HxlNavBar } from '@hxl/basic/Index'
 
 @Entry
 @Component
@@ -35,6 +35,8 @@ struct Setting {
 
   build() {
     Column() {
+      HxlNavBar({ title: '系统设置' })
+
       this.getListUI()
 
       this.getBtnUI()
