@@ -1,4 +1,4 @@
-import { HxlCard, HxlCardItem, KeyValue } from '@hxl/basic/Index'
+import { HxlCard, HxlCardItem, HxlSkeleton, KeyValue } from '@hxl/basic/Index'
 import { router } from '@kit.ArkUI'
 
 import { UserInfo, UserInfoModel, UserTaskInfo, UserTaskInfoModel, UserTaskInfoParam } from '../../../models'
@@ -141,6 +141,9 @@ struct My {
 
   build() {
     Column() {
+      if (!this.userInfo.number) {
+        HxlSkeleton({ count: 4 })
+      }
       // 基本信息
       this.getBaseInfoUI()
 
