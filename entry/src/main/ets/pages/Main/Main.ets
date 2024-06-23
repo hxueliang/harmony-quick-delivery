@@ -1,6 +1,7 @@
 import { TabModel } from '@hxl/basic/Index'
 
 import { My } from './'
+import TaskTabs from './Task/TaskTabs'
 
 @Entry
 @Component
@@ -48,7 +49,7 @@ struct Main {
       ForEach(this.tabsData, (item: TabModel) => {
         TabContent() {
           if (item.name === 'task') {
-            Text("任务组件")
+            TaskTabs()
           }
           else if (item.name === 'message') {
             Text("消息组件")
