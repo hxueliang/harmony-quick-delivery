@@ -1,19 +1,30 @@
 import { router } from '@kit.ArkUI'
 import { HxlNavBar, RouterParams } from '@hxl/basic/Index'
 
+import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
+import { getTaskDetail } from '../../apis'
+
 @Entry
 @Component
 struct TaskDetail {
+  @State
+  taskDetail: TaskDetailInfoModel = new TaskDetailInfoModel({} as TaskDetailInfo)
+
   aboutToAppear(): void {
     const params = router.getParams() as RouterParams
     if (params?.id) {
-      AlertDialog.show({ message: params.id.toString() })
+      this.getTaskDetail(params.id.toString())
     }
+  }
+
+  async getTaskDetail(id: string) {
+    this.taskDetail = await getTaskDetail(id)
   }
 
   build() {
     Column() {
       HxlNavBar({ title: '任务详情' })
+      Text(JSON.stringify(this.taskDetail))
     }
 
     .width('100%')
