@@ -1,5 +1,7 @@
 import { TabModel } from '@hxl/basic/Index'
 
+import { TaskList } from '.'
+
 @Preview
 @Component
 struct TaskTabs {
@@ -21,7 +23,13 @@ struct TaskTabs {
     Tabs({ index: $$this.currentIndex }) {
       ForEach(this.tabsData, (item: TabModel) => {
         TabContent() {
-          Text(item.title)
+          if (item.name === this.tabsData[0].name) {
+            TaskList()
+          } else if (item.name === this.tabsData[1].name) {
+
+          } else if (item.name === this.tabsData[2].name) {
+
+          }
         }.tabBar(item.title)
       })
     }
