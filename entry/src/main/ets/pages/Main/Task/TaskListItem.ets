@@ -1,3 +1,5 @@
+import { router } from '@kit.ArkUI'
+
 import { TaskListDataItem } from '../../../models'
 
 @Preview
@@ -59,6 +61,14 @@ struct TaskListItem {
         .fontSize(14)
         .height(32)
         .enabled(this.item.enablePickUp)
+        .onClick(() => {
+          router.pushUrl({
+            url: 'pages/TaskDetail/TaskDetail',
+            params: {
+              id: this.item.id
+            }
+          })
+        })
 
     }.justifyContent(FlexAlign.SpaceBetween).width('100%')
   }

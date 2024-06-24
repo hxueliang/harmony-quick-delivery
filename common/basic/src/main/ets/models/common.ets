@@ -4,3 +4,7 @@ export interface KeyValue<T> {
   value?: T
   label?: string
 }
+
+export interface RouterParams {
+  id?: string | number
+}
