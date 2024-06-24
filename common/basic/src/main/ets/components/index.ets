@@ -7,3 +7,5 @@ export * from './HxlNavBar'
 export * from './HxlConfirm'
 
 export * from './HxlSkeleton'
+
+export * from './HxlList'
