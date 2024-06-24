@@ -33,6 +33,7 @@ struct TaskTabs {
         }.tabBar(item.title)
       })
     }
+    .backgroundColor($r('app.color.background_page'))
   }
 
   /**

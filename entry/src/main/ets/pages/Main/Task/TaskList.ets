@@ -1,3 +1,4 @@
+import { TaskListItem } from '.'
 import { getTaskList } from '../../../apis'
 import { TaskStatusEnum } from '../../../constants'
 import {
@@ -31,7 +32,13 @@ struct TaskList {
   }
 
   build() {
-    Text(JSON.stringify(this.taskList))
+    List() {
+      ForEach(this.taskList, (item: TaskListDataItemModel) => {
+        ListItem() {
+          TaskListItem({ item })
+        }
+      })
+    }
   }
 }
 
