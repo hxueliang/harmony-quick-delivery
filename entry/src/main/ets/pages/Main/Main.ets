@@ -1,7 +1,7 @@
 import { TabModel } from '@hxl/basic/Index'
 
 import { My } from './'
-import TaskTabs from './Task/TaskTabs'
+import { TaskTabs } from './Task'
 
 @Entry
 @Component
