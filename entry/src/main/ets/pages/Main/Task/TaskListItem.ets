@@ -58,6 +58,7 @@ struct TaskListItem {
         .fontColor($r("app.color.white"))
         .fontSize(14)
         .height(32)
+        .enabled(this.item.enablePickUp)
 
     }.justifyContent(FlexAlign.SpaceBetween).width('100%')
   }
