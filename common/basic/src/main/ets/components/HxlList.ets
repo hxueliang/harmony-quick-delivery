@@ -3,6 +3,8 @@ import { promptAction } from '@kit.ArkUI'
 @Component
 export struct HxlList {
   @State
+  refreshStatus: RefreshStatus = RefreshStatus.Inactive
+  @State
   refreshing: boolean = false
   @State
   loading: boolean = false
@@ -21,6 +23,17 @@ export struct HxlList {
   onRefresh: () => void = () => {
   }
   scroller: Scroller = new Scroller()
+  refreshStatusMap: Record<RefreshStatus, string> = {}
+
+  aboutToAppear(): void {
+    this.setRefreshStatusMap()
+  }
+
+  setRefreshStatusMap() {
+    this.refreshStatusMap[RefreshStatus.Drag] = '继续下拉'
+    this.refreshStatusMap[RefreshStatus.OverDrag] = '松手加载'
+    this.refreshStatusMap[RefreshStatus.Refresh] = '加载中'
+  }
 
   @Builder
   getLastItemUI() {
@@ -39,8 +52,21 @@ export struct HxlList {
     .justifyContent(FlexAlign.Center)
   }
 
+  @Builder
+  getRefreshUI() {
+    Row({ space: 5 }) {
+      Text(this.refreshStatusMap[this.refreshStatus] || '')
+      if (this.refreshStatus === RefreshStatus.Refresh) {
+        LoadingProgress()
+          .width(20)
+          .aspectRatio(1)
+          .color($r('app.color.primary'))
+      }
+    }
+  }
+
   build() {
-    Refresh({ refreshing: $$this.refreshing }) {
+    Refresh({ refreshing: $$this.refreshing, builder: this.getRefreshUI }) {
       List({ space: 10, scroller: this.scroller }) {
         ForEach(this.list, (item: object) => {
           ListItem() {
@@ -65,6 +91,7 @@ export struct HxlList {
     }
     // .onRefreshing(() => { promptAction.showToast({ message: 'onRefreshing' }) })
     .onStateChange(async state => {
+      this.refreshStatus = state
       if (state !== RefreshStatus.Refresh) {
         return
       }
