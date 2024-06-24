@@ -14,7 +14,7 @@ async function requestHttp<T>(
   url = BASE_URL + url
   // Todo: 目录版本，git请求需要手动拼接参数，应该是官方的bug，后续版本调整后，要删除此代码
   if (method === http.RequestMethod.GET && data && Object.keys(data).length) {
-    url += "?" + Object.keys(data).map(key => `${key}=${data[key]}`).join("&")
+    url += "?" + Object.keys(data).filter(key => data[key] !== void (0)).map(key => `${key}=${data[key]}`).join("&")
   }
   // 组装参数
   const config: http.HttpRequestOptions = {
