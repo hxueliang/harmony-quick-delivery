@@ -1,7 +1,7 @@
 /** 设置margin和padding */
 export class MarginPaddingModel {
   /** 上下左右margin */
-  m?: number = 16
+  m?: number = 0
   /** 上下左右padding */
   p?: number = 16
   /** 上下margin */
@@ -9,7 +9,7 @@ export class MarginPaddingModel {
   /** 上下padding */
   ptb?: number = 0
   /** 左右margin */
-  mlr?: number = 0
+  mlr?: number = 16
   /** 左右padding */
   plr?: number = 0
   /** 左margin */

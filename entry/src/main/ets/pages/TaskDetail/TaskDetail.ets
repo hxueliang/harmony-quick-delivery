@@ -21,14 +21,26 @@ struct TaskDetail {
     this.taskDetail = await getTaskDetail(id)
   }
 
+  @Builder
+  getListUI() {
+    Scroll() {
+      Column({ space: 16 }) {
+        ForEach([1, 2, 3, 4], (item: number) => {
+          HxlToggleCard() {
+            Text(JSON.stringify(this.taskDetail))
+          }
+        })
+      }
+      .padding({ top: 16, bottom: 16 })
+    }
+  }
+
   build() {
     Column() {
       HxlNavBar({ title: '任务详情' })
-      HxlToggleCard() {
-        Text(JSON.stringify(this.taskDetail))
-      }
-    }
 
+      this.getListUI()
+    }
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.background_page'))
