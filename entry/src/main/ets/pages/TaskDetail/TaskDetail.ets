@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI'
-import { HxlNavBar, HxlToggleCard, HxlUpload, KeyValue, RouterParams } from '@hxl/basic/Index'
+import { HxlNavBar, HxlSkeleton, HxlToggleCard, HxlUpload, KeyValue, RouterParams } from '@hxl/basic/Index'
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
 import { getTaskDetail } from '../../apis'
@@ -182,6 +182,10 @@ struct TaskDetail {
   build() {
     Column() {
       HxlNavBar({ title: '任务详情' })
+
+      if (!this.taskDetail.id) {
+        HxlSkeleton({ count: 4, showAvatar: false })
+      }
 
       this.getListUI()
 
