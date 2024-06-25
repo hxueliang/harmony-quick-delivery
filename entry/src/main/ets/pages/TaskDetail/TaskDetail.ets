@@ -126,6 +126,32 @@ struct TaskDetail {
     .alignItems(HorizontalAlign.Start)
   }
 
+  /** 底部按钮结构 */
+  @Builder
+  getBottomBtnUI() {
+    // 已完成不显示任何按钮
+    Row() {
+      Button("延迟收货", { type: ButtonType.Capsule })
+        .backgroundColor($r('app.color.btn_gray'))
+        .fontColor($r('app.color.text_primary'))
+        .fontSize(16)
+        .height(50)
+        .width(125)
+      Button("提货", { type: ButtonType.Capsule })
+        .backgroundColor($r('app.color.primary_disabled'))
+        .fontColor($r('app.color.white'))
+        .height(50)
+        .flexGrow(1)
+        .margin({ left: 13 })
+    }
+    .width('100%')
+    .padding({ left: 15, right: 15 })
+    .height(70)
+    .justifyContent(FlexAlign.SpaceBetween)
+    .alignItems(VerticalAlign.Center)
+    .backgroundColor($r('app.color.white'))
+  }
+
   @Builder
   getListUI() {
     Scroll() {
@@ -148,7 +174,7 @@ struct TaskDetail {
       }
       .padding({ top: 16, bottom: 16 })
     }
-    .padding({ bottom: 56 })
+    .layoutWeight(1)
   }
 
   build() {
@@ -156,6 +182,8 @@ struct TaskDetail {
       HxlNavBar({ title: '任务详情' })
 
       this.getListUI()
+
+      this.getBottomBtnUI()
     }
     .width('100%')
     .height('100%')
