@@ -11,3 +11,5 @@ export * from './HxlSkeleton'
 export * from './HxlList'
 
 export * from './HxlToggleCard'
+
+export * from './HxlUpdate'

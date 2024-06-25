@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI'
-import { HxlNavBar, HxlToggleCard, KeyValue, RouterParams } from '@hxl/basic/Index'
+import { HxlNavBar, HxlToggleCard, HxlUpload, KeyValue, RouterParams } from '@hxl/basic/Index'
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
 import { getTaskDetail } from '../../apis'
@@ -115,6 +115,17 @@ struct TaskDetail {
     })
   }
 
+  /** 提货信息 */
+  @Builder
+  getTakeGoodsUI() {
+    Column() {
+      HxlUpload({ title: '请拍照上传回单凭证' })
+      HxlUpload({ title: '请拍照上传货品照片' })
+    }
+    .width('100%')
+    .alignItems(HorizontalAlign.Start)
+  }
+
   @Builder
   getListUI() {
     Scroll() {
@@ -130,9 +141,14 @@ struct TaskDetail {
         HxlToggleCard({ title: '运输路线' }) {
           this.getTransLineUI()
         }
+
+        HxlToggleCard({ title: '提货信息' }) {
+          this.getTakeGoodsUI()
+        }
       }
       .padding({ top: 16, bottom: 16 })
     }
+    .padding({ bottom: 56 })
   }
 
   build() {
