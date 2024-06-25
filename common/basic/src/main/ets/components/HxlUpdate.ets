@@ -1,7 +1,19 @@
+import { picker } from '@kit.CoreFileKit'
+
 @Preview
 @Component
 export struct HxlUpload {
   title: string = ''
+  maxNumber: number = 3
+
+  async selectImage() {
+    const photo = new picker.PhotoViewPicker()
+    const result = await photo.select({
+      MIMEType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
+      maxSelectNumber: this.maxNumber,
+    })
+    AlertDialog.show({ message: JSON.stringify(result.photoUris) })
+  }
 
   @Builder
   getAddBtnUI() {
@@ -16,6 +28,9 @@ export struct HxlUpload {
     .justifyContent(FlexAlign.Center)
     .margin({ bottom: 14 })
     .backgroundColor($r('app.color.background_page'))
+    .onClick(() => {
+      this.selectImage()
+    })
   }
 
   build() {
