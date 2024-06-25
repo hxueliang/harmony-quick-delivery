@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI'
-import { HxlNavBar, RouterParams } from '@hxl/basic/Index'
+import { HxlNavBar, HxlToggleCard, RouterParams } from '@hxl/basic/Index'
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
 import { getTaskDetail } from '../../apis'
@@ -24,7 +24,9 @@ struct TaskDetail {
   build() {
     Column() {
       HxlNavBar({ title: '任务详情' })
-      Text(JSON.stringify(this.taskDetail))
+      HxlToggleCard() {
+        Text(JSON.stringify(this.taskDetail))
+      }
     }
 
     .width('100%')

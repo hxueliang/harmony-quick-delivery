@@ -5,3 +5,5 @@ export * from './response'
 export * from './tab'
 
 export * from './common'
+
+export * from './style'

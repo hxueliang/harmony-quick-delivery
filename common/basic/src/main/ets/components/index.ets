@@ -9,3 +9,5 @@ export * from './HxlConfirm'
 export * from './HxlSkeleton'
 
 export * from './HxlList'
+
+export * from './HxlToggleCard'
