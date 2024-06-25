@@ -67,12 +67,60 @@ struct TaskDetail {
     this.getBaseItemUI({ label: '预计送达时间', value: '2132324324343434' })
   }
 
+  /** 车辆司机信息 */
+  @Builder
+  getDriverUI() {
+    Row() {
+      Text(`车牌号`).fontSize(14).fontColor($r('app.color.text_secondary'))
+        .lineHeight(20)
+      Text("京A123456").fontSize(14).fontColor($r('app.color.text_secondary'))
+    }.justifyContent(FlexAlign.SpaceBetween).width('100%').margin({
+      top: 14
+    })
+
+    Row() {
+      Text(`司机姓名`).fontSize(14).fontColor($r('app.color.text_secondary'))
+        .lineHeight(20)
+      Text("张三").fontSize(14).fontColor($r('app.color.text_secondary'))
+    }.justifyContent(FlexAlign.SpaceBetween).width('100%').margin({
+      top: 14
+    })
+  }
+
+  /** 运输路线 */
+  @Builder
+  getTransLineUI() {
+    Row() {
+      Column() {
+        Text("北京市").fontSize(16).fontColor($r('app.color.text_primary')).lineHeight(22).fontWeight(600)
+        Text("北京市").fontSize(14).lineHeight(22)
+      }.width(50)
+
+      Image($r("app.media.ic_right_arrow")).width(36).height(16)
+      Column() {
+        Text("河南省").fontSize(16).fontColor($r('app.color.text_primary')).lineHeight(22).fontWeight(600)
+        Text("郑州市").fontSize(14).lineHeight(22)
+      }.width(50)
+    }.justifyContent(FlexAlign.SpaceBetween).alignItems(VerticalAlign.Center).width('100%').padding({
+      left: 60,
+      right: 60
+    })
+  }
+
   @Builder
   getListUI() {
     Scroll() {
       Column({ space: 16 }) {
         HxlToggleCard({ title: '基本信息' }) {
           this.getBaseUI()
+        }
+
+        HxlToggleCard({ title: '车辆司机信息' }) {
+          this.getDriverUI()
+        }
+
+        HxlToggleCard({ title: '运输路线' }) {
+          this.getTransLineUI()
         }
       }
       .padding({ top: 16, bottom: 16 })
