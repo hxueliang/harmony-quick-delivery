@@ -29,7 +29,13 @@ export struct HxlToggleCard {
       .justifyContent(FlexAlign.SpaceBetween)
 
       if (this.showCard && this.contentUI) {
-        this.contentUI()
+        Column() {
+          this.contentUI()
+        }
+        .transition(
+          TransitionEffect.OPACITY.animation({ duration: 300 })
+            .combine(TransitionEffect.translate({ y: -40 }))
+        )
       }
     }
     .padding({
