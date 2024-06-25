@@ -154,25 +154,27 @@ struct TaskDetail {
 
   @Builder
   getListUI() {
-    Scroll() {
-      Column({ space: 16 }) {
-        HxlToggleCard({ title: '基本信息', showCard: true }) {
-          this.getBaseUI()
-        }
+    Column() {
+      Scroll() {
+        Column({ space: 16 }) {
+          HxlToggleCard({ title: '基本信息', showCard: true }) {
+            this.getBaseUI()
+          }
 
-        HxlToggleCard({ title: '车辆司机信息' }) {
-          this.getDriverUI()
-        }
+          HxlToggleCard({ title: '车辆司机信息' }) {
+            this.getDriverUI()
+          }
 
-        HxlToggleCard({ title: '运输路线' }) {
-          this.getTransLineUI()
-        }
+          HxlToggleCard({ title: '运输路线' }) {
+            this.getTransLineUI()
+          }
 
-        HxlToggleCard({ title: '提货信息' }) {
-          this.getTakeGoodsUI()
+          HxlToggleCard({ title: '提货信息' }) {
+            this.getTakeGoodsUI()
+          }
         }
+        .padding({ top: 16, bottom: 16 })
       }
-      .padding({ top: 16, bottom: 16 })
     }
     .layoutWeight(1)
   }
