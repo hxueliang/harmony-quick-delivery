@@ -1,5 +1,14 @@
 import { router } from '@kit.ArkUI'
-import { HxlNavBar, HxlSkeleton, HxlToggleCard, HxlUpload, ImageList, KeyValue, RouterParams } from '@hxl/basic/Index'
+import {
+  HxlNavBar,
+  HxlSkeleton,
+  HxlToggleCard,
+  HxlUpload,
+  ImageList,
+  KeyValue,
+  RouterParams,
+  UploadFile
+} from '@hxl/basic/Index'
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
 import { getTaskDetail } from '../../apis'
@@ -29,6 +38,11 @@ struct TaskDetail {
         && this.taskDetail.cargoPictureList?.length > 0
         && this.taskDetail.cargoPictureList?.every(item =>!!item.url)
     )
+  }
+
+  /** 点击提货 */
+  goPickUp() {
+    UploadFile(this.taskDetail.cargoPickUpPictureList)
   }
 
   /** 获取基础信息项目 */
@@ -166,6 +180,9 @@ struct TaskDetail {
         .flexGrow(1)
         .margin({ left: 13 })
         .enabled(this.getPickUpEnabled())
+        .onClick(() => {
+          this.goPickUp()
+        })
     }
     .width('100%')
     .padding({ left: 15, right: 15 })
@@ -180,7 +197,7 @@ struct TaskDetail {
     Column() {
       Scroll() {
         Column({ space: 16 }) {
-          HxlToggleCard({ title: '基本信息', showCard: true }) {
+          HxlToggleCard({ title: '基本信息', showCard: false }) {
             this.getBaseUI()
           }
 
@@ -192,7 +209,7 @@ struct TaskDetail {
             this.getTransLineUI()
           }
 
-          HxlToggleCard({ title: '提货信息' }) {
+          HxlToggleCard({ title: '提货信息', showCard: true }) {
             this.getTakeGoodsUI()
           }
         }

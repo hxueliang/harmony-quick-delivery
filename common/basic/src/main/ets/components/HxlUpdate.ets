@@ -1,7 +1,9 @@
-import { picker } from '@kit.CoreFileKit'
+import { fileIo, picker } from '@kit.CoreFileKit'
 
 import { HxlPreview } from '.'
 import { ImageList } from '../models'
+import { util } from '@kit.ArkTS'
+import { request } from '@kit.BasicServicesKit'
 
 /** 图片宽/高 */
 const IMAGE_WIDTH = 100
@@ -105,4 +107,24 @@ function getImageRowStyle() {
   .aspectRatio(1)
   .borderRadius(4)
   .justifyContent(FlexAlign.Center)
+}
+
+export const UploadFile = (list: ImageList[]) => {
+  const cacheDir = getContext().cacheDir
+  const filesParamsList: request.File[] = []
+  list.forEach(item => {
+    const file = fileIo.openSync(item.url, fileIo.OpenMode.READ_ONLY) // 手机相册中的图片
+    const extendName = item.url.split('.')[1]
+    const fileName = util.generateRandomUUID() + '.' + extendName
+    const path = cacheDir + '/' + fileName
+    fileIo.copyFileSync(file.fd, path)
+    filesParamsList.push({
+      filename: fileName,
+      name: 'file', // 上传接口字段名
+      uri: 'internal://' + path,
+      type: extendName,
+    })
+    fileIo.close(file.fd) // 释放资源
+  })
+  AlertDialog.show({ message: JSON.stringify(filesParamsList) })
 }
