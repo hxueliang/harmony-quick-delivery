@@ -1,8 +1,18 @@
 import { picker } from '@kit.CoreFileKit'
+import { ImageList } from '../models'
+
+/** 图片宽/高 */
+const IMAGE_WIDTH = 100
+/** 行间隔高 */
+const ROWS_GAP = 10
+/** 阴影高 */
+const SHADOW_RADIUS = 6
 
 @Preview
 @Component
 export struct HxlUpload {
+  @State
+  imageList: ImageList[] = []
   title: string = ''
   maxNumber: number = 3
 
@@ -10,27 +20,50 @@ export struct HxlUpload {
     const photo = new picker.PhotoViewPicker()
     const result = await photo.select({
       MIMEType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
-      maxSelectNumber: this.maxNumber,
+      maxSelectNumber: this.maxNumber - this.imageList.length, // 分多次选择要减去之前以选的数量
     })
-    AlertDialog.show({ message: JSON.stringify(result.photoUris) })
+    this.imageList = this.imageList.concat(result.photoUris.map(url => ({ url } as ImageList)))
+  }
+
+  getGridHeight() {
+    let basicsNum = this.maxNumber
+    if (this.imageList.length < this.maxNumber) {
+      basicsNum = this.imageList.length + 1 // 加1表示：加上"+号图片"来算grid的高度
+    }
+    const lineHeight = IMAGE_WIDTH + ROWS_GAP
+    return Math.ceil(basicsNum / 3) * lineHeight
   }
 
   @Builder
-  getAddBtnUI() {
-    Row() {
-      Image($r('app.media.ic_add_img'))
-        .width(30)
-        .aspectRatio(1)
+  getAddImageUI() {
+    Grid() {
+      ForEach(this.imageList, (item: ImageList) => {
+        GridItem() {
+          Row() {
+            Image(item.url)
+              .width(IMAGE_WIDTH - SHADOW_RADIUS).aspectRatio(1).borderRadius(4)
+              .shadow({ radius: SHADOW_RADIUS, color: $r('app.color.text_secondary') })
+          }
+          .getImageRowStyle()
+        }
+      })
+      if (this.imageList.length < this.maxNumber) {
+        GridItem() {
+          Row() {
+            Image($r('app.media.ic_add_img')).width(30).aspectRatio(1)
+          }
+          .getImageRowStyle()
+          .backgroundColor($r('app.color.background_page'))
+          .onClick(() => {
+            this.selectImage()
+          })
+        }
+      }
     }
-    .width(100)
-    .aspectRatio(1)
-    .borderRadius(4)
-    .justifyContent(FlexAlign.Center)
-    .margin({ bottom: 14 })
-    .backgroundColor($r('app.color.background_page'))
-    .onClick(() => {
-      this.selectImage()
-    })
+    .height(this.getGridHeight())
+    .columnsTemplate('1fr 1fr 1fr')
+    .columnsGap(ROWS_GAP)
+    .rowsGap(ROWS_GAP)
   }
 
   build() {
@@ -40,9 +73,17 @@ export struct HxlUpload {
         .fontColor($r('app.color.text_secondary'))
         .margin({ bottom: 16, top: 4 })
 
-      this.getAddBtnUI()
+      this.getAddImageUI()
     }
     .alignItems(HorizontalAlign.Start)
     .width('100%')
   }
+}
+
+@Extend(Row)
+function getImageRowStyle() {
+  .width(IMAGE_WIDTH)
+  .aspectRatio(1)
+  .borderRadius(4)
+  .justifyContent(FlexAlign.Center)
 }
