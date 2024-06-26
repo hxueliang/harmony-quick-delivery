@@ -41,8 +41,9 @@ struct TaskDetail {
   }
 
   /** 点击提货 */
-  goPickUp() {
-    UploadFile(this.taskDetail.cargoPickUpPictureList)
+  async goPickUp() {
+    const cargoPickUpPictureList = await UploadFile(this.taskDetail.cargoPickUpPictureList)
+    AlertDialog.show({ message: JSON.stringify(cargoPickUpPictureList) })
   }
 
   /** 获取基础信息项目 */

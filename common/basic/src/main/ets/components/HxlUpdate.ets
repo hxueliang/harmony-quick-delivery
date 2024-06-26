@@ -4,6 +4,7 @@ import { HxlPreview } from '.'
 import { ImageList } from '../models'
 import { util } from '@kit.ArkTS'
 import { request } from '@kit.BasicServicesKit'
+import { uploadImage } from '../apis'
 
 /** 图片宽/高 */
 const IMAGE_WIDTH = 100
@@ -109,7 +110,7 @@ function getImageRowStyle() {
   .justifyContent(FlexAlign.Center)
 }
 
-export const UploadFile = (list: ImageList[]) => {
+export const UploadFile = async (list: ImageList[]) => {
   const cacheDir = getContext().cacheDir
   const filesParamsList: request.File[] = []
   list.forEach(item => {
@@ -121,10 +122,10 @@ export const UploadFile = (list: ImageList[]) => {
     filesParamsList.push({
       filename: fileName,
       name: 'file', // 上传接口字段名
-      uri: 'internal://' + path,
+      uri: 'internal://cache/' + fileName,
       type: extendName,
     })
     fileIo.close(file.fd) // 释放资源
   })
-  AlertDialog.show({ message: JSON.stringify(filesParamsList) })
+  return await uploadImage(getContext(), filesParamsList)
 }
