@@ -56,15 +56,24 @@ export struct HxlUpload {
       ForEach(this.imageList, (item: ImageList, index: number) => {
         GridItem() {
           Row() {
-            Image(item.url)
-              .width(IMAGE_WIDTH - SHADOW_RADIUS)
-              .aspectRatio(1)
-              .borderRadius(4)
-              .shadow({ radius: SHADOW_RADIUS, color: $r('app.color.text_secondary') })
-              .onClick(() => {
-                this.currentIndex = index
-                this.preview.open()
-              })
+            Stack({ alignContent: Alignment.TopEnd }) {
+              Image(item.url)
+                .width(IMAGE_WIDTH - SHADOW_RADIUS)
+                .aspectRatio(1)
+                .borderRadius(4)
+                .shadow({ radius: SHADOW_RADIUS, color: $r('app.color.text_secondary') })
+                .onClick(() => {
+                  this.currentIndex = index
+                  this.preview.open()
+                })
+              Image($r('app.media.ic_btn_delete'))
+                .width(30)
+                .aspectRatio(1)
+                .onClick(() => {
+                  this.imageList.splice(index, 1)
+                  this.onListChange(this.imageList)
+                })
+            }
           }
           .getImageRowStyle()
         }
