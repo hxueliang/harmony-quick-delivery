@@ -15,3 +15,5 @@ export * from './HxlToggleCard'
 export * from './HxlUpdate'
 
 export * from './HxlPreview'
+
+export * from './HxlLoading'

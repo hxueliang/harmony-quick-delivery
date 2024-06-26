@@ -1,5 +1,6 @@
 import { promptAction, router } from '@kit.ArkUI'
 import {
+  HxlLoading,
   HxlNavBar,
   HxlSkeleton,
   HxlToggleCard,
@@ -20,6 +21,10 @@ struct TaskDetail {
   @State
   taskDetail: TaskDetailInfoModel = new TaskDetailInfoModel({} as TaskDetailInfo)
   scroller: Scroller = new Scroller()
+  loading: CustomDialogController = new CustomDialogController({
+    builder: HxlLoading({ title: '处理中...' }),
+    customStyle: true
+  })
 
   aboutToAppear(): void {
     const params = router.getParams() as RouterParams
@@ -44,6 +49,7 @@ struct TaskDetail {
 
   /** 点击提货 */
   async goPickUp() {
+    this.loading.open()
     const arr = await Promise.all([
       UploadFile(this.taskDetail.cargoPickUpPictureList),
       UploadFile(this.taskDetail.cargoPictureList)
@@ -56,6 +62,7 @@ struct TaskDetail {
     // await pickUp(params) // Todo: 暂时不调接口，还没做在途，做完在途在回来测试
     this.getTaskDetail(this.taskDetail.id)
     this.scroller.scrollEdge(Edge.Top)
+    this.loading.close()
     promptAction.showToast({ message: '提货成功' })
   }
 
