@@ -1,4 +1,6 @@
 import { picker } from '@kit.CoreFileKit'
+
+import { HxlPreview } from '.'
 import { ImageList } from '../models'
 
 /** 图片宽/高 */
@@ -15,6 +17,14 @@ export struct HxlUpload {
   imageList: ImageList[] = []
   title: string = ''
   maxNumber: number = 3
+  currentIndex: number = 0
+  preview: CustomDialogController = new CustomDialogController({
+    builder: HxlPreview({
+      urls: this.imageList.map(item => item.url),
+      index: this.currentIndex
+    }),
+    customStyle: true,
+  })
 
   async selectImage() {
     const photo = new picker.PhotoViewPicker()
@@ -37,12 +47,18 @@ export struct HxlUpload {
   @Builder
   getAddImageUI() {
     Grid() {
-      ForEach(this.imageList, (item: ImageList) => {
+      ForEach(this.imageList, (item: ImageList, index: number) => {
         GridItem() {
           Row() {
             Image(item.url)
-              .width(IMAGE_WIDTH - SHADOW_RADIUS).aspectRatio(1).borderRadius(4)
+              .width(IMAGE_WIDTH - SHADOW_RADIUS)
+              .aspectRatio(1)
+              .borderRadius(4)
               .shadow({ radius: SHADOW_RADIUS, color: $r('app.color.text_secondary') })
+              .onClick(() => {
+                this.currentIndex = index
+                this.preview.open()
+              })
           }
           .getImageRowStyle()
         }

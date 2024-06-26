@@ -53,8 +53,16 @@
       "value": "#000000"
     },
     {
+      "name": "black_transparent",
+      "value": "#77000000"
+    },
+    {
       "name": "white",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "white_transparent",
+      "value": "#77FFFFFF"
     },
     {
       "name": "gray_1",
