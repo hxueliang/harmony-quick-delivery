@@ -35,13 +35,17 @@ struct Login {
   }
 
   async login() {
-    this.loading = true
-    const token = await login(this.loginForm)
-    this.loading = false
-    await new TokenStore(getContext()).setToken(token)
-    AppStorage.set(TOKEN_KEY, token)
-    promptAction.showToast({ message: '登录成功' })
-    router.replaceUrl({ url: 'pages/Main/Main' })
+    try {
+      this.loading = true
+      const token = await login(this.loginForm)
+      this.loading = false
+      await new TokenStore(getContext()).setToken(token)
+      AppStorage.set(TOKEN_KEY, token)
+      promptAction.showToast({ message: '登录成功' })
+      router.replaceUrl({ url: 'pages/Main/Main' })
+    } catch (err) {
+      this.loading = false
+    }
   }
 
   build() {
