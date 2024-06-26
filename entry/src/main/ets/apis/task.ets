@@ -46,8 +46,8 @@ export async function getTaskDetail(id: string) {
   return Request.get<TaskDetailInfoModel>(`/tasks/details/${id}`)
 
   // 模似数据
-  const res = await Request.get<TaskDetailInfoModel>(`/tasks/details/${id}`)
-  console.log('x_log', JSON.stringify(res))
+  // const res = await Request.get<TaskDetailInfoModel>(`/tasks/details/${id}`)
+  // console.log('x_log', JSON.stringify(res))
   const obj = new TaskDetailInfoModel({
     "id": "4061815043250542307",
     "startAgencyId": "1024984540818568481",
