@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI'
-import { HxlNavBar, HxlSkeleton, HxlToggleCard, HxlUpload, KeyValue, RouterParams } from '@hxl/basic/Index'
+import { HxlNavBar, HxlSkeleton, HxlToggleCard, HxlUpload, ImageList, KeyValue, RouterParams } from '@hxl/basic/Index'
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
 import { getTaskDetail } from '../../apis'
@@ -19,6 +19,16 @@ struct TaskDetail {
 
   async getTaskDetail(id: string) {
     this.taskDetail = await getTaskDetail(id)
+  }
+
+  /** 提货按钮可否点击 */
+  getPickUpEnabled() {
+    return (
+      this.taskDetail.cargoPickUpPictureList?.length > 0
+        && this.taskDetail.cargoPickUpPictureList?.every(item =>!!item.url)
+        && this.taskDetail.cargoPictureList?.length > 0
+        && this.taskDetail.cargoPictureList?.every(item =>!!item.url)
+    )
   }
 
   /** 获取基础信息项目 */
@@ -119,8 +129,20 @@ struct TaskDetail {
   @Builder
   getTakeGoodsUI() {
     Column() {
-      HxlUpload({ title: '请拍照上传回单凭证' })
-      HxlUpload({ title: '请拍照上传货品照片' })
+      HxlUpload({
+        title: '请拍照上传回单凭证',
+        imageList: this.taskDetail.cargoPickUpPictureList || [],
+        onListChange: (list: ImageList[]) => {
+          this.taskDetail.cargoPickUpPictureList = list
+        }
+      })
+      HxlUpload({
+        title: '请拍照上传货品照片',
+        imageList: this.taskDetail.cargoPictureList || [],
+        onListChange: (list: ImageList[]) => {
+          this.taskDetail.cargoPictureList = list
+        }
+      })
     }
     .width('100%')
     .alignItems(HorizontalAlign.Start)
@@ -138,11 +160,12 @@ struct TaskDetail {
         .height(50)
         .width(125)
       Button("提货", { type: ButtonType.Capsule })
-        .backgroundColor($r('app.color.primary_disabled'))
+        .backgroundColor($r('app.color.primary'))
         .fontColor($r('app.color.white'))
         .height(50)
         .flexGrow(1)
         .margin({ left: 13 })
+        .enabled(this.getPickUpEnabled())
     }
     .width('100%')
     .padding({ left: 15, right: 15 })

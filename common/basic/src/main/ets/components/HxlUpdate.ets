@@ -13,7 +13,7 @@ const SHADOW_RADIUS = 6
 @Preview
 @Component
 export struct HxlUpload {
-  @State
+  @Prop
   imageList: ImageList[] = []
   title: string = ''
   maxNumber: number = 3
@@ -25,6 +25,8 @@ export struct HxlUpload {
     }),
     customStyle: true,
   })
+  onListChange: (list: ImageList[]) => void = () => {
+  }
 
   async selectImage() {
     const photo = new picker.PhotoViewPicker()
@@ -33,6 +35,7 @@ export struct HxlUpload {
       maxSelectNumber: this.maxNumber - this.imageList.length, // 分多次选择要减去之前以选的数量
     })
     this.imageList = this.imageList.concat(result.photoUris.map(url => ({ url } as ImageList)))
+    this.onListChange(this.imageList)
   }
 
   getGridHeight() {
