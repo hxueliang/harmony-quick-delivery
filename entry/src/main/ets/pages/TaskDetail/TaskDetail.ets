@@ -1,4 +1,4 @@
-import { router } from '@kit.ArkUI'
+import { promptAction, router } from '@kit.ArkUI'
 import {
   HxlNavBar,
   HxlSkeleton,
@@ -11,13 +11,15 @@ import {
 } from '@hxl/basic/Index'
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
-import { getTaskDetail } from '../../apis'
+import { getTaskDetail, pickUp } from '../../apis'
+import { PickUpParams } from '../../models'
 
 @Entry
 @Component
 struct TaskDetail {
   @State
   taskDetail: TaskDetailInfoModel = new TaskDetailInfoModel({} as TaskDetailInfo)
+  scroller: Scroller = new Scroller()
 
   aboutToAppear(): void {
     const params = router.getParams() as RouterParams
@@ -42,8 +44,19 @@ struct TaskDetail {
 
   /** 点击提货 */
   async goPickUp() {
-    const cargoPickUpPictureList = await UploadFile(this.taskDetail.cargoPickUpPictureList)
-    AlertDialog.show({ message: JSON.stringify(cargoPickUpPictureList) })
+    const arr = await Promise.all([
+      UploadFile(this.taskDetail.cargoPickUpPictureList),
+      UploadFile(this.taskDetail.cargoPictureList)
+    ])
+    const params: PickUpParams = {
+      id: this.taskDetail.id,
+      cargoPickUpPictureList: arr[0],
+      cargoPictureList: arr[1]
+    }
+    // await pickUp(params) // Todo: 暂时不调接口，还没做在途，做完在途在回来测试
+    this.getTaskDetail(this.taskDetail.id)
+    this.scroller.scrollEdge(Edge.Top)
+    promptAction.showToast({ message: '提货成功' })
   }
 
   /** 获取基础信息项目 */
@@ -196,9 +209,9 @@ struct TaskDetail {
   @Builder
   getListUI() {
     Column() {
-      Scroll() {
+      Scroll(this.scroller) {
         Column({ space: 16 }) {
-          HxlToggleCard({ title: '基本信息', showCard: false }) {
+          HxlToggleCard({ title: '基本信息', showCard: true }) {
             this.getBaseUI()
           }
 
