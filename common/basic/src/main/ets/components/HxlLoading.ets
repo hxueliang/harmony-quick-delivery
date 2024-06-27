@@ -17,7 +17,7 @@ export struct HxlLoading {
     }
     .justifyContent(FlexAlign.Center)
     .width('100%')
-    .height('100%')
+    .height('108%')
     .backgroundColor('rgba(0, 0, 0, 0.3)')
   }
 }
