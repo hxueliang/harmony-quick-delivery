@@ -6,6 +6,7 @@ import {
   HxlToggleCard,
   HxlUpload,
   ImageList,
+  ImageListModel,
   KeyValue,
   RouterParams,
   UploadFile
@@ -55,6 +56,11 @@ struct TaskDetail {
         UploadFile(this.taskDetail.cargoPickUpPictureList),
         UploadFile(this.taskDetail.cargoPictureList)
       ])
+      // 模似上传返回数据
+      // let arr = [
+      //   [{ url: 'https://b.bdstatic.com/searchbox/icms/searchbox/img/young_boy.png' } as ImageList],
+      //   [{ url: 'https://b.bdstatic.com/searchbox/icms/searchbox/img/young_girl.png' } as ImageList]
+      // ]
       const params: PickUpParams = {
         id: this.taskDetail.id,
         cargoPickUpPictureList: arr[0],
