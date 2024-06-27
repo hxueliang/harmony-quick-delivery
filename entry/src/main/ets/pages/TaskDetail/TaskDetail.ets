@@ -14,8 +14,9 @@ import {
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
 import { getTaskDetail, pickUp } from '../../apis'
-import { PickUpParams } from '../../models'
+import { DeliverParams, PickUpParams } from '../../models'
 import { TaskStatusEnum } from '../../constants'
+import { deliver } from '../../apis/deliver'
 
 @Entry
 @Component
@@ -92,6 +93,33 @@ struct TaskDetail {
 
   /** 点击交货 */
   async goDeliver() {
+    try {
+      this.loading.open()
+      let arr = await Promise.all([
+        UploadFile(this.taskDetail.certificatePictureList),
+        UploadFile(this.taskDetail.deliverPictureList)
+      ])
+      // 模似上传返回数据
+      // let arr = [
+      //   [{ url: 'https://storage.jd.com/jtz.file.cloudy/202403/15110537lje6.jpg' } as ImageList],
+      //   [{ url: 'https://storage.jd.com/jtz.file.cloudy/202403/15110524bt7a.jpg' } as ImageList]
+      // ]
+      const params: DeliverParams = {
+        id: this.taskDetail.id,
+        certificatePictureList: arr[0],
+        deliverPictureList: arr[1]
+      }
+      await deliver(params)
+      this.getTaskDetail(this.taskDetail.id)
+      this.scroller.scrollEdge(Edge.Top)
+      promptAction.showToast({ message: '交货成功' })
+    } catch (err) {
+      const errObj: Error = Array.isArray(err) && err.length ? err[0] : err
+      console.log('x_log', errObj.message)
+      AlertDialog.show({ message: errObj.message })
+    } finally {
+      this.loading.close()
+    }
   }
 
   /** 获取基础信息项目 */
