@@ -1,6 +1,8 @@
 import { TabModel } from '@hxl/basic/Index'
 
 import { TaskList } from '.'
+import { TaskListParams, TaskListParamsModel } from '../../../models'
+import { TaskStatusEnum } from '../../../constants'
 
 @Preview
 @Component
@@ -8,13 +10,13 @@ struct TaskTabs {
   @State
   currentIndex: number = 0
   tabsData: TabModel[] = [{
-    name: 'waiting',
+    name: TaskStatusEnum.WAITING.toString(),
     title: '待提货'
   }, {
-    name: 'line',
+    name: TaskStatusEnum.LINE.toString(),
     title: '在途'
   }, {
-    name: 'finish',
+    name: TaskStatusEnum.FINISH.toString(),
     title: '已完成'
   }]
 
@@ -23,13 +25,13 @@ struct TaskTabs {
     Tabs({ index: $$this.currentIndex }) {
       ForEach(this.tabsData, (item: TabModel) => {
         TabContent() {
-          if (item.name === this.tabsData[0].name) {
-            TaskList()
-          } else if (item.name === this.tabsData[1].name) {
-
-          } else if (item.name === this.tabsData[2].name) {
-
-          }
+          TaskList({
+            queryParams: new TaskListParamsModel({
+              status: Number(item.name),
+              page: 1,
+              pageSize: 5,
+            } as TaskListParams)
+          })
         }.tabBar(item.title)
       })
     }
