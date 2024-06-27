@@ -1,5 +1,6 @@
 import { router } from '@kit.ArkUI'
 
+import { TaskStatusEnum } from '../../../constants'
 import { TaskListDataItem } from '../../../models'
 
 @Preview
@@ -7,6 +8,28 @@ import { TaskListDataItem } from '../../../models'
 struct TaskListItem {
   @Prop
   item: Partial<TaskListDataItem> = {}
+  btnTextMap: Record<TaskStatusEnum, string> = {} as Record<TaskStatusEnum, string>
+
+  aboutToAppear(): void {
+    this.setBtnTextMap()
+  }
+
+  setBtnTextMap() {
+    this.btnTextMap[TaskStatusEnum.WAITING] = '提货'
+    this.btnTextMap[TaskStatusEnum.LINE] = '交货'
+    this.btnTextMap[TaskStatusEnum.DELIVERED] = '回车登记'
+  }
+
+  getBtnText() {
+    return this.btnTextMap[Number(this.item?.status) as TaskStatusEnum]
+  }
+
+  getBtnEnabled() {
+    const status = Number(this.item?.status) as TaskStatusEnum
+    return (status === TaskStatusEnum.WAITING) && this.item?.enablePickUp ||
+      status === TaskStatusEnum.LINE ||
+      status === TaskStatusEnum.DELIVERED
+  }
 
   @Builder
   getTaskIdUI() {
@@ -55,12 +78,12 @@ struct TaskListItem {
         Text(this.item?.planArrivalTime || '').fontSize(14).fontColor($r('app.color.text_secondary')).margin({ top: 4 })
       }.alignItems(HorizontalAlign.Start)
 
-      Button("提货", { type: ButtonType.Capsule })
+      Button(this.getBtnText(), { type: ButtonType.Capsule })
         .backgroundColor($r('app.color.primary'))
         .fontColor($r("app.color.white"))
         .fontSize(14)
         .height(32)
-        .enabled(this.item?.enablePickUp)
+        .enabled(this.getBtnEnabled())
         .onClick(() => {
           router.pushUrl({
             url: 'pages/TaskDetail/TaskDetail',
