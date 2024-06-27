@@ -15,6 +15,7 @@ import {
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
 import { getTaskDetail, pickUp } from '../../apis'
 import { PickUpParams } from '../../models'
+import { TaskStatusEnum } from '../../constants'
 
 @Entry
 @Component
@@ -201,29 +202,14 @@ struct TaskDetail {
   getBottomBtnUI() {
     // 已完成不显示任何按钮
     Row() {
-      Button("延迟收货", { type: ButtonType.Capsule })
-        .backgroundColor($r('app.color.btn_gray'))
-        .fontColor($r('app.color.text_primary'))
-        .fontSize(16)
-        .height(50)
-        .width(125)
-      Button("提货", { type: ButtonType.Capsule })
-        .backgroundColor($r('app.color.primary'))
-        .fontColor($r('app.color.white'))
-        .height(50)
-        .flexGrow(1)
-        .margin({ left: 13 })
-        .enabled(this.getPickUpEnabled())
-        .onClick(() => {
-          this.goPickUp()
-        })
-    }
-    .width('100%')
-    .padding({ left: 15, right: 15 })
-    .height(70)
-    .justifyContent(FlexAlign.SpaceBetween)
-    .alignItems(VerticalAlign.Center)
-    .backgroundColor($r('app.color.white'))
+      if (this.taskDetail.status === TaskStatusEnum.WAITING) {
+        Button("延迟收货", { type: ButtonType.Capsule }).leftBottomBtnStyle()
+        Button("提货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getPickUpEnabled())
+          .onClick(() => {
+            this.goPickUp()
+          })
+      }
+    }.rowBottomBtnStyle()
   }
 
   @Builder
@@ -243,8 +229,10 @@ struct TaskDetail {
             this.getTransLineUI()
           }
 
-          HxlToggleCard({ title: '提货信息', showCard: true }) {
-            this.getTakeGoodsUI()
+          if (this.taskDetail.status === TaskStatusEnum.WAITING) {
+            HxlToggleCard({ title: '提货信息', showCard: true }) {
+              this.getTakeGoodsUI()
+            }
           }
         }
         .padding({ top: 16, bottom: 16 })
@@ -285,4 +273,32 @@ function baseTextOneStyle() {
 @Extend(Text)
 function baseTextTwoStyle() {
   .margin({ left: 11.5 }).fontColor($r('app.color.text_secondary')).fontSize(14).lineHeight(20)
+}
+
+@Extend(Button)
+function leftBottomBtnStyle() {
+  .backgroundColor($r('app.color.btn_gray'))
+  .fontColor($r('app.color.text_primary'))
+  .fontSize(16)
+  .height(50)
+  .width(125)
+}
+
+@Extend(Button)
+function rightBottomBtnStyle() {
+  .backgroundColor($r('app.color.primary'))
+  .fontColor($r('app.color.white'))
+  .height(50)
+  .flexGrow(1)
+  .margin({ left: 13 })
+}
+
+@Extend(Row)
+function rowBottomBtnStyle() {
+  .width('100%')
+  .padding({ left: 15, right: 15 })
+  .height(70)
+  .justifyContent(FlexAlign.SpaceBetween)
+  .alignItems(VerticalAlign.Center)
+  .backgroundColor($r('app.color.white'))
 }
