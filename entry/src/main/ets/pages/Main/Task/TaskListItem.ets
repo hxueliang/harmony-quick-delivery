@@ -11,7 +11,7 @@ struct TaskListItem {
   @Builder
   getTaskIdUI() {
     Row() {
-      Text(`任务编号：${this.item.id || ''}`)
+      Text(`任务编号：${this.item?.id || ''}`)
         .fontSize(16)
         .fontColor($r("app.color.text_primary"))
         .fontWeight(500)
@@ -52,7 +52,7 @@ struct TaskListItem {
     Row() {
       Column() {
         Text('提货时间').fontSize(14).fontColor($r('app.color.text_secondary'))
-        Text(this.item.planArrivalTime || '').fontSize(14).fontColor($r('app.color.text_secondary')).margin({ top: 4 })
+        Text(this.item?.planArrivalTime || '').fontSize(14).fontColor($r('app.color.text_secondary')).margin({ top: 4 })
       }.alignItems(HorizontalAlign.Start)
 
       Button("提货", { type: ButtonType.Capsule })
@@ -60,12 +60,12 @@ struct TaskListItem {
         .fontColor($r("app.color.white"))
         .fontSize(14)
         .height(32)
-        .enabled(this.item.enablePickUp)
+        .enabled(this.item?.enablePickUp)
         .onClick(() => {
           router.pushUrl({
             url: 'pages/TaskDetail/TaskDetail',
             params: {
-              id: this.item.id
+              id: this.item?.id
             }
           })
         })
@@ -77,9 +77,9 @@ struct TaskListItem {
     Column() {
       this.getTaskIdUI()
 
-      this.getAddressUI('start', this.item.startAddress || '')
+      this.getAddressUI('start', this.item?.startAddress || '')
 
-      this.getAddressUI('end', this.item.endAddress || '')
+      this.getAddressUI('end', this.item?.endAddress || '')
 
       this.getDividerUI()
 

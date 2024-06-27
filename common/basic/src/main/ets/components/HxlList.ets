@@ -68,11 +68,20 @@ export struct HxlList {
   build() {
     Refresh({ refreshing: $$this.refreshing, builder: this.getRefreshUI }) {
       List({ space: 10, scroller: this.scroller }) {
-        ForEach(this.list, (item: object) => {
-          ListItem() {
-            this.renderer(item)
-          }
-        })
+        // 因为this.list是由业务组件传入的
+        // 而业务组件的传入的list大概率是接口返回的
+        // 接口返回的数据有可能不是数组类型
+        // 目前面发现在途列表为空时，接口没返回空数组，而返回null倒导致应用直接死掉
+        // 此处增加 数组效验 和 非空交验
+        if (Array.isArray(this.list)) {
+          ForEach(this.list, (item: object) => {
+            if (item) {
+              ListItem() {
+                this.renderer(item)
+              }
+            }
+          })
+        }
         ListItem() {
           this.getLastItemUI()
         }
