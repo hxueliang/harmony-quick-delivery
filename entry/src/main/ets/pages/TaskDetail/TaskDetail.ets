@@ -49,21 +49,28 @@ struct TaskDetail {
 
   /** 点击提货 */
   async goPickUp() {
-    this.loading.open()
-    const arr = await Promise.all([
-      UploadFile(this.taskDetail.cargoPickUpPictureList),
-      UploadFile(this.taskDetail.cargoPictureList)
-    ])
-    const params: PickUpParams = {
-      id: this.taskDetail.id,
-      cargoPickUpPictureList: arr[0],
-      cargoPictureList: arr[1]
+    try {
+      this.loading.open()
+      let arr = await Promise.all([
+        UploadFile(this.taskDetail.cargoPickUpPictureList),
+        UploadFile(this.taskDetail.cargoPictureList)
+      ])
+      const params: PickUpParams = {
+        id: this.taskDetail.id,
+        cargoPickUpPictureList: arr[0],
+        cargoPictureList: arr[1]
+      }
+      await pickUp(params)
+      this.getTaskDetail(this.taskDetail.id)
+      this.scroller.scrollEdge(Edge.Top)
+      promptAction.showToast({ message: '提货成功' })
+    } catch (err) {
+      const errObj: Error = Array.isArray(err) && err.length ? err[0] : err
+      console.log('x_log', errObj.message)
+      AlertDialog.show({ message: errObj.message })
+    } finally {
+      this.loading.close()
     }
-    // await pickUp(params) // Todo: 暂时不调接口，还没做在途，做完在途在回来测试
-    this.getTaskDetail(this.taskDetail.id)
-    this.scroller.scrollEdge(Edge.Top)
-    this.loading.close()
-    promptAction.showToast({ message: '提货成功' })
   }
 
   /** 获取基础信息项目 */

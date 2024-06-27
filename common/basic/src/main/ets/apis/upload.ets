@@ -23,9 +23,8 @@ export const uploadImage = (context: Context, files: request.File[]) => {
       const task = await request.uploadFile(context, config)
 
       // 监听失败
-      task.on('fail', () => {
-        AlertDialog.show({ message: '上传失败' })
-        reject(new Error('上传失败'))
+      task.on('fail', (err) => {
+        reject(err)
       })
 
       // 监听图片上传完成，上传成功多少张图片，触发多少次该回调，并将结果存入arr中
@@ -42,7 +41,6 @@ export const uploadImage = (context: Context, files: request.File[]) => {
         resolve(arr)
       })
     } catch (err) {
-      AlertDialog.show({ message: err.message })
       reject(err)
     }
   })
