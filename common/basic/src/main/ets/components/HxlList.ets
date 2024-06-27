@@ -98,6 +98,7 @@ export struct HxlList {
         }, 500)
       })
     }
+    .height('100%')
     // .onRefreshing(() => { promptAction.showToast({ message: 'onRefreshing' }) })
     .onStateChange(async state => {
       this.refreshStatus = state
