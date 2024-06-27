@@ -6,17 +6,14 @@ import {
   HxlToggleCard,
   HxlUpload,
   ImageList,
-  ImageListModel,
   KeyValue,
   RouterParams,
   UploadFile
 } from '@hxl/basic/Index'
 
-import { TaskDetailInfo, TaskDetailInfoModel } from '../../models/taskDetail'
-import { getTaskDetail, pickUp } from '../../apis'
-import { DeliverParams, PickUpParams } from '../../models'
+import { DeliverParams, PickUpParams, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
+import { getTaskDetail, pickUp, deliver } from '../../apis'
 import { TaskStatusEnum } from '../../constants'
-import { deliver } from '../../apis/deliver'
 
 @Entry
 @Component

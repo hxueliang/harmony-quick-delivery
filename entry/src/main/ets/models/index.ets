@@ -4,6 +4,8 @@ export * from './userTask'
 
 export * from './task'
 
+export * from './taskDetail'
+
 export * from './pickUp'
 
 export * from './deliver'

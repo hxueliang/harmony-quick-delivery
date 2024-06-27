@@ -1,6 +1,14 @@
 import { Request } from '@hxl/basic/Index'
-import { TaskListDataItem, TaskListDataItemModel, TaskListDataModel, TaskListParams } from '../models/task'
-import { TaskDetailInfoModel } from '../models/taskDetail'
+
+import {
+  DeliverParams,
+  PickUpParams,
+  TaskDetailInfoModel,
+  TaskListDataItem,
+  TaskListDataItemModel,
+  TaskListDataModel,
+  TaskListParams
+} from '../models'
 
 export async function getTaskList(params: TaskListParams) {
   return Request.get<TaskListDataModel>('/tasks/list', params)
@@ -79,4 +87,12 @@ export async function getTaskDetail(id: string) {
     // "enablePickUp": true
   })
   return await obj
+}
+
+export const pickUp = (params: PickUpParams) => {
+  return Request.post<null>('/tasks/takeDelivery', params)
+}
+
+export const deliver = (params: DeliverParams) => {
+  return Request.post<null>('/tasks/deliver', params)
 }
