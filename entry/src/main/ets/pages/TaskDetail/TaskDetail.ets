@@ -220,6 +220,7 @@ struct TaskDetail {
       HxlUpload({
         title: '请拍照上传回单凭证',
         imageList: this.taskDetail.cargoPickUpPictureList || [],
+        canUpdateImage: this.taskDetail.status === TaskStatusEnum.WAITING,
         onListChange: (list: ImageList[]) => {
           this.taskDetail.cargoPickUpPictureList = list
         }
@@ -227,6 +228,7 @@ struct TaskDetail {
       HxlUpload({
         title: '请拍照上传货品照片',
         imageList: this.taskDetail.cargoPictureList || [],
+        canUpdateImage: this.taskDetail.status === TaskStatusEnum.WAITING,
         onListChange: (list: ImageList[]) => {
           this.taskDetail.cargoPictureList = list
         }
@@ -243,6 +245,7 @@ struct TaskDetail {
       HxlUpload({
         title: '请拍照上传交货回单凭证',
         imageList: this.taskDetail.certificatePictureList || [],
+        canUpdateImage: this.taskDetail.status === TaskStatusEnum.LINE,
         onListChange: (list: ImageList[]) => {
           this.taskDetail.certificatePictureList = list
         }
@@ -250,6 +253,7 @@ struct TaskDetail {
       HxlUpload({
         title: '请拍照上传交货货品照片',
         imageList: this.taskDetail.deliverPictureList || [],
+        canUpdateImage: this.taskDetail.status === TaskStatusEnum.LINE,
         onListChange: (list: ImageList[]) => {
           this.taskDetail.deliverPictureList = list
         }
@@ -278,6 +282,12 @@ struct TaskDetail {
             this.goDeliver()
           })
       }
+      else if (this.taskDetail.status === TaskStatusEnum.DELIVERED) {
+        Row() {
+          // 已交付显示回车登记
+          Button("回车登记", { type: ButtonType.Capsule }).rightBottomBtnStyle().width('80%')
+        }.width('100%').justifyContent(FlexAlign.Center)
+      }
     }.rowBottomBtnStyle()
   }
 
@@ -298,12 +308,12 @@ struct TaskDetail {
             this.getTransLineUI()
           }
 
-          if (this.taskDetail.status === TaskStatusEnum.WAITING) {
+          if ([TaskStatusEnum.WAITING, TaskStatusEnum.DELIVERED].includes(this.taskDetail.status)) {
             HxlToggleCard({ title: '提货信息', showCard: true }) {
               this.getTakeGoodsUI()
             }
           }
-          else if (this.taskDetail.status === TaskStatusEnum.LINE) {
+          if ([TaskStatusEnum.LINE, TaskStatusEnum.DELIVERED].includes(this.taskDetail.status)) {
             HxlToggleCard({ title: '交货信息', showCard: true }) {
               this.getGiveGoodsUI()
             }

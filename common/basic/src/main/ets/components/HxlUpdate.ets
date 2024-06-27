@@ -18,6 +18,8 @@ const SHADOW_RADIUS = 6
 export struct HxlUpload {
   @Prop
   imageList: ImageList[] = []
+  @Prop
+  canUpdateImage: boolean = true
   title: string = ''
   maxNumber: number = 3
   currentIndex: number = 0
@@ -66,19 +68,21 @@ export struct HxlUpload {
                   this.currentIndex = index
                   this.preview.open()
                 })
-              Image($r('app.media.ic_btn_delete'))
-                .width(30)
-                .aspectRatio(1)
-                .onClick(() => {
-                  this.imageList.splice(index, 1)
-                  this.onListChange(this.imageList)
-                })
+              if (this.canUpdateImage) {
+                Image($r('app.media.ic_btn_delete'))
+                  .width(30)
+                  .aspectRatio(1)
+                  .onClick(() => {
+                    this.imageList.splice(index, 1)
+                    this.onListChange(this.imageList)
+                  })
+              }
             }
           }
           .getImageRowStyle()
         }
       })
-      if (this.imageList.length < this.maxNumber) {
+      if (this.imageList.length < this.maxNumber && this.canUpdateImage) {
         GridItem() {
           Row() {
             Image($r('app.media.ic_add_img')).width(30).aspectRatio(1)
