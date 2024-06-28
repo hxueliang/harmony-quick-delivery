@@ -1,6 +1,7 @@
 import { Request } from '@hxl/basic/Index'
 
 import {
+  CarRecordTypeModel,
   DeliverParams,
   PickUpParams,
   TaskDetailInfoModel,
@@ -95,4 +96,8 @@ export const pickUp = (params: PickUpParams) => {
 
 export const deliver = (params: DeliverParams) => {
   return Request.post<null>('/tasks/deliver', params)
+}
+
+export const carRecord = (params: CarRecordTypeModel) => {
+  return Request.post<null>('/tasks/truckRegistration', params)
 }

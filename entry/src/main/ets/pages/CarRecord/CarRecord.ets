@@ -1,14 +1,28 @@
-import { router } from '@kit.ArkUI'
-import { HxlCard, HxlCardItem, HxlCheckBox, HxlNavBar, RouterParams } from '@hxl/basic/Index'
+import { promptAction, router } from '@kit.ArkUI'
+import {
+  formatDateTime,
+  HxlCard,
+  HxlCardItem,
+  HxlCheckBox,
+  HxlLoading,
+  HxlNavBar,
+  RouterParams
+} from '@hxl/basic/Index'
 
-import { TaskDetailInfo, TaskDetailInfoModel } from '../../models'
-import { getTaskDetail } from '../../apis'
+import { CarRecordType, CarRecordTypeModel, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
+import { carRecord, getTaskDetail } from '../../apis'
 
 @Entry
 @Component
 struct CarRecord {
   @State
   taskDetail: TaskDetailInfoModel = new TaskDetailInfoModel({} as TaskDetailInfo)
+  @State
+  carRecordParams: CarRecordTypeModel = new CarRecordTypeModel({} as CarRecordType)
+  loading: CustomDialogController = new CustomDialogController({
+    builder: HxlLoading({ title: '处理中...' }),
+    customStyle: true
+  })
 
   aboutToAppear(): void {
     const params: RouterParams = router.getParams() as RouterParams
@@ -19,11 +33,48 @@ struct CarRecord {
     this.taskDetail = await getTaskDetail(id)
   }
 
+  async goCarRecord() {
+    if (!this.carRecordParams.endTime) {
+      promptAction.showToast({ message: '请选择回车时间' })
+      return
+    }
+    this.carRecordParams.id = this.taskDetail.transportTaskId
+    this.carRecordParams.startTime = this.taskDetail.actualDepartureTime
+    try {
+      this.loading.open()
+      await carRecord(this.carRecordParams)
+      promptAction.showToast({ message: '交车成功' })
+      router.clear()
+      router.replaceUrl({
+        url: 'pages/Main/Main'
+      })
+    } catch (err) {
+      promptAction.showToast({ message: err.message })
+    } finally {
+      this.loading.close()
+    }
+  }
+
   @Builder
   getTimeUI() {
     HxlCard() {
       HxlCardItem({ label: '出车时间', value: this.taskDetail.actualDepartureTime })
-      HxlCardItem({ label: '回车时间', value: '2020', showIcon: true, showLine: false })
+      HxlCardItem({
+        label: '回车时间',
+        value: this.carRecordParams.endTime || '请选择',
+        showIcon: true,
+        showLine: false,
+        onClink: () => {
+          DatePickerDialog.show({
+            showTime: true,
+            useMilitaryTime: true,
+            onDateAccept: (date) => {
+              const formatDate = formatDateTime(new Date(date), 'yyyy-MM-dd hh:mm')
+              this.carRecordParams.endTime = formatDate;
+            }
+          })
+        }
+      })
     }
   }
 
@@ -31,6 +82,9 @@ struct CarRecord {
   getBottomBtnUI() {
     Row() {
       Button('交车').rightBottomBtnStyle()
+        .onClick(() => {
+          this.goCarRecord()
+        })
     }.rowBottomBtnStyle()
   }
 
@@ -41,11 +95,23 @@ struct CarRecord {
       Column() {
         this.getTimeUI()
 
-        HxlCheckBox({ label: '车辆违章', value: false })
+        HxlCheckBox({
+          label: '车辆违章',
+          value: !!this.carRecordParams.isBreakRules,
+          onChangeValue: bool => this.carRecordParams.isBreakRules = bool
+        })
 
-        HxlCheckBox({ label: '车辆故障', value: false })
+        HxlCheckBox({
+          label: '车辆故障',
+          value: !!this.carRecordParams.isFault,
+          onChangeValue: bool => this.carRecordParams.isFault = bool
+        })
 
-        HxlCheckBox({ label: '车辆事故 ', value: false })
+        HxlCheckBox({
+          label: '车辆事故 ',
+          value: !!this.carRecordParams.isAccident,
+          onChangeValue: bool => this.carRecordParams.isAccident = bool
+        })
 
       }.layoutWeight(1)
 
