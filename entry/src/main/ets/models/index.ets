@@ -9,3 +9,5 @@ export * from './taskDetail'
 export * from './pickUp'
 
 export * from './deliver'
+
+export * from './carRecord'

@@ -119,6 +119,14 @@ struct TaskDetail {
     }
   }
 
+  /** 回车登记 */
+  goCarRecord() {
+    router.pushUrl({
+      url: 'pages/CarRecord/CarRecord',
+      params: { id: this.taskDetail.id },
+    })
+  }
+
   /** 获取基础信息项目 */
   @Builder
   getBaseItemUI(item: KeyValue<string>) {
@@ -286,6 +294,9 @@ struct TaskDetail {
         Row() {
           // 已交付显示回车登记
           Button("回车登记", { type: ButtonType.Capsule }).rightBottomBtnStyle().width('80%')
+            .onClick(() => {
+              this.goCarRecord()
+            })
         }.width('100%').justifyContent(FlexAlign.Center)
       }
     }.rowBottomBtnStyle()
