@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI'
-import { HxlCard, HxlCardItem, HxlNavBar, RouterParams } from '@hxl/basic/Index'
+import { HxlCard, HxlCardItem, HxlCheckBox, HxlNavBar, RouterParams } from '@hxl/basic/Index'
 
 import { TaskDetailInfo, TaskDetailInfoModel } from '../../models'
 import { getTaskDetail } from '../../apis'
@@ -40,6 +40,12 @@ struct CarRecord {
 
       Column() {
         this.getTimeUI()
+
+        HxlCheckBox({ label: '车辆违章', value: false })
+
+        HxlCheckBox({ label: '车辆故障', value: false })
+
+        HxlCheckBox({ label: '车辆事故 ', value: false })
 
       }.layoutWeight(1)
 
