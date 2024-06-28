@@ -277,7 +277,12 @@ struct TaskDetail {
     // 已完成不显示任何按钮
     Row() {
       if (this.taskDetail.status === TaskStatusEnum.WAITING) {
-        Button("延迟收货", { type: ButtonType.Capsule }).leftBottomBtnStyle()
+        Button("延迟提货", { type: ButtonType.Capsule }).leftBottomBtnStyle()
+          .onClick(() => {
+            router.pushUrl({
+              url: 'pages/Delay/Delay',
+            })
+          })
         Button("提货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getPickUpEnabled())
           .onClick(() => {
             this.goPickUp()
