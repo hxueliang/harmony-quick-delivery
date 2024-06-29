@@ -281,6 +281,10 @@ struct TaskDetail {
           .onClick(() => {
             router.pushUrl({
               url: 'pages/Delay/Delay',
+              params: {
+                id: this.taskDetail.id,
+                oldTime: this.taskDetail.planDepartureTime,
+              }
             })
           })
         Button("提货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getPickUpEnabled())

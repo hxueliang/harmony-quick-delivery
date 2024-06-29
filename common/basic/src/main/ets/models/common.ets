@@ -8,6 +8,7 @@ export interface KeyValue<T> {
 
 export interface RouterParams {
   id?: string | number
+  oldTime?: string
 }
 
 export interface ImageList {

@@ -2,6 +2,7 @@ import { Request } from '@hxl/basic/Index'
 
 import {
   CarRecordTypeModel,
+  DelayParamsTypeModel,
   DeliverParams,
   PickUpParams,
   TaskDetailInfoModel,
@@ -100,4 +101,8 @@ export const deliver = (params: DeliverParams) => {
 
 export const carRecord = (params: CarRecordTypeModel) => {
   return Request.post<null>('/tasks/truckRegistration', params)
+}
+
+export const delay = (params: DelayParamsTypeModel) => {
+  return Request.put<null>('/tasks/delay', params)
 }
