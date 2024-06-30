@@ -41,6 +41,9 @@ struct Delay {
             DatePickerDialog.show({
               showTime: true,
               useMilitaryTime: true,
+              selectedTextStyle: {
+                color: $r('app.color.primary'),
+              },
               onDateAccept: (date) => {
                 const formatDate = formatDateTime(new Date(date), 'yyyy-MM-dd hh:mm')
                 this.delayParams.delayTime = formatDate
