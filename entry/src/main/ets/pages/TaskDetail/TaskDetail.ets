@@ -294,6 +294,14 @@ struct TaskDetail {
       }
       else if (this.taskDetail.status === TaskStatusEnum.LINE) {
         Button("上报异常", { type: ButtonType.Capsule }).leftBottomBtnStyle()
+          .onClick(() => {
+            router.pushUrl({
+              url: 'pages/ExceptionReport/ExceptionReport',
+              params: {
+                id: this.taskDetail.transportTaskId,
+              }
+            })
+          })
         Button("交货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getDeliverEnabled())
           .onClick(() => {
             this.goDeliver()
