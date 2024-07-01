@@ -1,8 +1,12 @@
-import { HxlCard, HxlCardItem, HxlNavBar, HxlUpload } from '@hxl/basic/Index'
+import { formatDateTime, HxlCard, HxlCardItem, HxlNavBar, HxlUpload } from '@hxl/basic/Index'
+import { ExceptionParamsType, ExceptionParamsTypeModel } from '../../models'
 
 @Entry
 @Component
 struct ExceptionReport {
+  @State
+  exceptionParams: ExceptionParamsTypeModel = new ExceptionParamsTypeModel({} as ExceptionParamsType)
+
   @Builder
   getListUI() {
     Column() {
@@ -10,7 +14,16 @@ struct ExceptionReport {
         Column({ space: 16 }) {
           HxlCard() {
             HxlCardItem({
-              label: '异常时间', value: '请选择', showIcon: true,
+              label: '异常时间', value: this.exceptionParams.exceptionTime || '请选择', showIcon: true,
+              onClink: () => {
+                DatePickerDialog.show({
+                  showTime: true,
+                  useMilitaryTime: true,
+                  onDateAccept: (value) => {
+                    this.exceptionParams.exceptionTime = formatDateTime(value, 'yyyy-MM-dd hh:mm')
+                  }
+                })
+              }
             })
             HxlCardItem({
               label: '上报位置', value: '请选择', showIcon: true,
