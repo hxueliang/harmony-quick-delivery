@@ -1,5 +1,6 @@
 import { formatDateTime, HxlCard, HxlCardItem, HxlNavBar, HxlSelectCard, HxlUpload } from '@hxl/basic/Index'
 import { ExceptionParamsType, ExceptionParamsTypeModel } from '../../models'
+import { router } from '@kit.ArkUI'
 
 const exceptErrorList: string[] = ['发动机启动困难', '不着车、漏油', '照明失灵', '有异常响动', '排烟异常、温度异常', '轮胎漏气', '其他问题']
 
@@ -76,6 +77,11 @@ struct ExceptionReport {
             })
             HxlCardItem({
               label: '上报位置', value: '请选择', showIcon: true,
+              onClink: () => {
+                router.pushUrl({
+                  url: 'pages/SelectLocation/SelectLocation'
+                })
+              }
             })
             HxlCardItem({
               label: '异常类型', value: this.exceptionParams.exceptionType || '请选择', showIcon: true,
