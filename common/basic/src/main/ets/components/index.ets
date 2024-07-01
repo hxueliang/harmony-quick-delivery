@@ -19,3 +19,5 @@ export * from './HxlPreview'
 export * from './HxlLoading'
 
 export * from './HxlCheckBox'
+
+export * from './HxlSelectCard'

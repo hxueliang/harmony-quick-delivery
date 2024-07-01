@@ -1,11 +1,60 @@
-import { formatDateTime, HxlCard, HxlCardItem, HxlNavBar, HxlUpload } from '@hxl/basic/Index'
+import { formatDateTime, HxlCard, HxlCardItem, HxlNavBar, HxlSelectCard, HxlUpload } from '@hxl/basic/Index'
 import { ExceptionParamsType, ExceptionParamsTypeModel } from '../../models'
+
+const exceptErrorList: string[] = ['发动机启动困难', '不着车、漏油', '照明失灵', '有异常响动', '排烟异常、温度异常', '轮胎漏气', '其他问题']
 
 @Entry
 @Component
 struct ExceptionReport {
   @State
   exceptionParams: ExceptionParamsTypeModel = new ExceptionParamsTypeModel({} as ExceptionParamsType)
+  typeDialog: CustomDialogController = new CustomDialogController({
+    builder: HxlSelectCard({
+      title: '请选择异常类型',
+      renderer: () => {
+        this.getTypeListUI()
+      },
+      onConfirm: () => {
+        this.exceptionParams.exceptionType = exceptErrorList[this.currentTypeIndex]
+        this.typeDialog.close()
+      }
+    }),
+    customStyle: true,
+    alignment: DialogAlignment.Bottom,
+  })
+  @State
+  currentTypeIndex: number = -1
+
+  @Builder
+  getTypeListItemUI(item: string, index: number, showLine: boolean) {
+    Row() {
+      Text(item)
+      Image(this.currentTypeIndex === index ? $r('app.media.ic_radio_true') : $r('app.media.ic_radio_false'))
+        .width(30)
+        .aspectRatio(1)
+        .translate({ x: 8 })
+    }
+    .width('100%')
+    .height(60)
+    .justifyContent(FlexAlign.SpaceBetween)
+    .border({ width: { bottom: showLine ? 1 : 0 }, color: $r('app.color.background_divider') })
+    .onClick(() => {
+      this.currentTypeIndex = index
+    })
+  }
+
+  @Builder
+  getTypeListUI() {
+    Column() {
+      List() {
+        ForEach(exceptErrorList, (item: string, index: number) => {
+          this.getTypeListItemUI(item, index, index < exceptErrorList.length - 1)
+        })
+      }
+      .padding({ left: 16, right: 16 })
+    }
+    .height(exceptErrorList.length >= 6 ? 360 : 'auto')
+  }
 
   @Builder
   getListUI() {
@@ -29,7 +78,10 @@ struct ExceptionReport {
               label: '上报位置', value: '请选择', showIcon: true,
             })
             HxlCardItem({
-              label: '异常类型', value: '请选择', showIcon: true,
+              label: '异常类型', value: this.exceptionParams.exceptionType || '请选择', showIcon: true,
+              onClink: () => {
+                this.typeDialog.open()
+              }
             })
             HxlCardItem({
               label: '异常描述', value: '', showLine: false,
@@ -59,7 +111,7 @@ struct ExceptionReport {
   @Builder
   getBottomBtnUI() {
     Row() {
-      Button("提交")
+      Button('提交')
         .height(50).width(207)
         .backgroundColor($r('app.color.primary'))
     }
