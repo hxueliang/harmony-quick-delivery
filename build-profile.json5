@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "storePassword": "0000001B815146A7009BF312FD523E6F8CD3100668058316DCA048BD940257EF0B38310EAAB48107E6EDA4",
+          "certpath": "/Users/xlh/Documents/learn/harmony/code/certificate/harmony-quick-delivery/quick.cer",
+          "keyAlias": "quick",
+          "keyPassword": "0000001B13A74A2BFD50821E529A4A676036FC404919D7299DB35122BB43CFB128AB1C6131D6652016B90C",
+          "profile": "/Users/xlh/Documents/learn/harmony/code/certificate/harmony-quick-delivery/harmony-quick-deliveryDebug.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/xlh/Documents/learn/harmony/code/certificate/harmony-quick-delivery/quick.p12"
+        }
+      }
+    ],
     "products": [
       {
         "name": "default",
