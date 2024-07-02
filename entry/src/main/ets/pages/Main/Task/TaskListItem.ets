@@ -43,7 +43,7 @@ struct TaskListItem {
   @Builder
   getTaskIdUI() {
     Row() {
-      Text(`任务编号：${this.item?.id || ''}`)
+      Text(`任务编号：${this.item?.transportTaskId || ''}`)
         .fontSize(16)
         .fontColor($r("app.color.text_primary"))
         .fontWeight(500)

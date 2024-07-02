@@ -52,13 +52,26 @@ struct TaskList {
     })
   }
 
-  async getSearchList() {
+  async onSearch(value: string) {
+    this.resetSearchTime = false
+    if (!value) {
+      this.getSearchList()
+      return
+    }
+    this.queryParams.startTime = ''
+    this.queryParams.endTime = ''
+    this.getSearchList()
+  }
+
+  async getSearchList(setReset?: boolean) {
     try {
       if (this.resetSearchTime) {
         this.queryParams.startTime = ''
         this.queryParams.endTime = ''
       }
-      this.resetSearchTime = !this.resetSearchTime
+      if (setReset) {
+        this.resetSearchTime = !this.resetSearchTime
+      }
       this.pageTotal = 1
       this.queryParams.page = 1
       this.loading.open()
@@ -73,7 +86,15 @@ struct TaskList {
   getSearchForm() {
     Column() {
       Row() {
-        Search({ placeholder: '请输入任务编号' }).backgroundColor($r('app.color.background_page')).height(32)
+        Search({ placeholder: '请输入任务编号', value: this.queryParams.transportTaskId || '' })
+          .backgroundColor($r('app.color.background_page'))
+          .height(32)
+          .onSubmit((value) => this.onSearch(value)) // Todo: 待测试
+        // .onClick(() => {
+        //   // Todo: 模似onSubmit
+        //   this.queryParams.transportTaskId = '4061815043250358556'
+        //   this.onSearch(this.queryParams.transportTaskId)
+        // })
       }.justifyContent(FlexAlign.Center).width('100%').padding({ bottom: 5 })
 
       Row() {
@@ -88,7 +109,9 @@ struct TaskList {
           .width(60)
           .backgroundColor(this.resetSearchTime ? $r('app.color.warning') : $r('app.color.primary'))
           .enabled(this.getSearchBtnEnable())
-          .onClick(() => this.getSearchList())
+          .onClick(() => {
+            this.getSearchList(true)
+          })
       }
       .width('100%')
       .alignItems(VerticalAlign.Center)
@@ -98,6 +121,7 @@ struct TaskList {
     .padding(16)
     .justifyContent(FlexAlign.Center)
     .width('100%')
+    .border({ width: { bottom: 1 }, color: $r('app.color.background_divider') })
   }
 
   @Builder
