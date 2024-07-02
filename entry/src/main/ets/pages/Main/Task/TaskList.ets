@@ -18,6 +18,8 @@ struct TaskList {
   taskList: TaskListDataItemModel[] = []
   @State
   pageTotal: number = 1
+  @State
+  resetSearchTime: boolean = false
   loading: CustomDialogController = new CustomDialogController({
     builder: HxlLoading(),
     customStyle: true,
@@ -45,12 +47,18 @@ struct TaskList {
         else if (key === 'endTime') {
           this.queryParams.endTime = formatDateTime(value, 'yyyy-MM-dd')
         }
+        this.resetSearchTime = false
       }
     })
   }
 
   async getSearchList() {
     try {
+      if (this.resetSearchTime) {
+        this.queryParams.startTime = ''
+        this.queryParams.endTime = ''
+      }
+      this.resetSearchTime = !this.resetSearchTime
       this.pageTotal = 1
       this.queryParams.page = 1
       this.loading.open()
@@ -75,10 +83,10 @@ struct TaskList {
         Text("至")
         Button(this.queryParams.endTime || '结束时间').getSearchBtnStyle()
           .onClick(() => this.selectTime('endTime'))
-        Button("筛选")
+        Button(this.resetSearchTime ? '重置' : '筛选')
           .height(32)
           .width(60)
-          .backgroundColor($r('app.color.primary'))
+          .backgroundColor(this.resetSearchTime ? $r('app.color.warning') : $r('app.color.primary'))
           .enabled(this.getSearchBtnEnable())
           .onClick(() => this.getSearchList())
       }
