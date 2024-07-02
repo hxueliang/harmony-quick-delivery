@@ -31,6 +31,15 @@ struct TaskListItem {
       status === TaskStatusEnum.DELIVERED
   }
 
+  goTaskDetail() {
+    router.pushUrl({
+      url: 'pages/TaskDetail/TaskDetail',
+      params: {
+        id: this.item?.id
+      }
+    })
+  }
+
   @Builder
   getTaskIdUI() {
     Row() {
@@ -71,27 +80,36 @@ struct TaskListItem {
   }
 
   @Builder
+  getDirectionUI() {
+    Text('提货时间').fontSize(14).fontColor($r('app.color.text_secondary'))
+    Text(this.item?.planArrivalTime || '').fontSize(14).fontColor($r('app.color.text_secondary'))
+  }
+
+  @Builder
   getBtnUI() {
     Row() {
-      Column() {
-        Text('提货时间').fontSize(14).fontColor($r('app.color.text_secondary'))
-        Text(this.item?.planArrivalTime || '').fontSize(14).fontColor($r('app.color.text_secondary')).margin({ top: 4 })
-      }.alignItems(HorizontalAlign.Start)
+      if (parseInt(this.item.status!) === TaskStatusEnum.FINISH) {
+        Row({ space: 10 }) {
+          this.getDirectionUI()
+        }
+      } else {
+        Column({ space: 4 }) {
+          this.getDirectionUI()
+        }.alignItems(HorizontalAlign.Start)
+      }
 
-      Button(this.getBtnText(), { type: ButtonType.Capsule })
-        .backgroundColor($r('app.color.primary'))
-        .fontColor($r("app.color.white"))
-        .fontSize(14)
-        .height(32)
-        .enabled(this.getBtnEnabled())
-        .onClick(() => {
-          router.pushUrl({
-            url: 'pages/TaskDetail/TaskDetail',
-            params: {
-              id: this.item?.id
-            }
+
+      if (parseInt(this.item.status!) !== TaskStatusEnum.FINISH) {
+        Button(this.getBtnText(), { type: ButtonType.Capsule })
+          .backgroundColor($r('app.color.primary'))
+          .fontColor($r("app.color.white"))
+          .fontSize(14)
+          .height(32)
+          .enabled(this.getBtnEnabled())
+          .onClick(() => {
+            this.goTaskDetail()
           })
-        })
+      }
 
     }.justifyContent(FlexAlign.SpaceBetween).width('100%')
   }
@@ -112,7 +130,12 @@ struct TaskListItem {
     .padding({ left: 19.5, right: 19.5, bottom: 18.5, top: 18.5 })
     .borderRadius(10)
     .backgroundColor($r('app.color.white'))
-
+    .onClick(() => {
+      if (parseInt(this.item.status!) !== TaskStatusEnum.FINISH) {
+        return
+      }
+      this.goTaskDetail()
+    })
   }
 }
 

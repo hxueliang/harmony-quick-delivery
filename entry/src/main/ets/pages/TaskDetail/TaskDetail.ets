@@ -275,48 +275,50 @@ struct TaskDetail {
   @Builder
   getBottomBtnUI() {
     // 已完成不显示任何按钮
-    Row() {
-      if (this.taskDetail.status === TaskStatusEnum.WAITING) {
-        Button("延迟提货", { type: ButtonType.Capsule }).leftBottomBtnStyle()
-          .onClick(() => {
-            router.pushUrl({
-              url: 'pages/Delay/Delay',
-              params: {
-                id: this.taskDetail.id,
-                oldTime: this.taskDetail.planDepartureTime,
-              }
-            })
-          })
-        Button("提货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getPickUpEnabled())
-          .onClick(() => {
-            this.goPickUp()
-          })
-      }
-      else if (this.taskDetail.status === TaskStatusEnum.LINE) {
-        Button("上报异常", { type: ButtonType.Capsule }).leftBottomBtnStyle()
-          .onClick(() => {
-            router.pushUrl({
-              url: 'pages/ExceptionReport/ExceptionReport',
-              params: {
-                id: this.taskDetail.transportTaskId,
-              }
-            })
-          })
-        Button("交货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getDeliverEnabled())
-          .onClick(() => {
-            this.goDeliver()
-          })
-      }
-      else if (this.taskDetail.status === TaskStatusEnum.DELIVERED) {
-        Row() {
-          // 已交付显示回车登记
-          Button("回车登记", { type: ButtonType.Capsule }).rightBottomBtnStyle().width('80%')
+    if (this.taskDetail.status !== TaskStatusEnum.FINISH) {
+      Row() {
+        if (this.taskDetail.status === TaskStatusEnum.WAITING) {
+          Button("延迟提货", { type: ButtonType.Capsule }).leftBottomBtnStyle()
             .onClick(() => {
-              this.goCarRecord()
+              router.pushUrl({
+                url: 'pages/Delay/Delay',
+                params: {
+                  id: this.taskDetail.id,
+                  oldTime: this.taskDetail.planDepartureTime,
+                }
+              })
             })
-        }.width('100%').justifyContent(FlexAlign.Center)
-      }
-    }.rowBottomBtnStyle()
+          Button("提货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getPickUpEnabled())
+            .onClick(() => {
+              this.goPickUp()
+            })
+        }
+        else if (this.taskDetail.status === TaskStatusEnum.LINE) {
+          Button("上报异常", { type: ButtonType.Capsule }).leftBottomBtnStyle()
+            .onClick(() => {
+              router.pushUrl({
+                url: 'pages/ExceptionReport/ExceptionReport',
+                params: {
+                  id: this.taskDetail.transportTaskId,
+                }
+              })
+            })
+          Button("交货", { type: ButtonType.Capsule }).rightBottomBtnStyle().enabled(this.getDeliverEnabled())
+            .onClick(() => {
+              this.goDeliver()
+            })
+        }
+        else if (this.taskDetail.status === TaskStatusEnum.DELIVERED) {
+          Row() {
+            // 已交付显示回车登记
+            Button("回车登记", { type: ButtonType.Capsule }).rightBottomBtnStyle().width('80%')
+              .onClick(() => {
+                this.goCarRecord()
+              })
+          }.width('100%').justifyContent(FlexAlign.Center)
+        }
+      }.rowBottomBtnStyle()
+    }
   }
 
   @Builder
@@ -336,12 +338,12 @@ struct TaskDetail {
             this.getTransLineUI()
           }
 
-          if ([TaskStatusEnum.WAITING, TaskStatusEnum.DELIVERED].includes(this.taskDetail.status)) {
+          if ([TaskStatusEnum.WAITING, TaskStatusEnum.DELIVERED, TaskStatusEnum.FINISH].includes(this.taskDetail.status)) {
             HxlToggleCard({ title: '提货信息', showCard: true }) {
               this.getTakeGoodsUI()
             }
           }
-          if ([TaskStatusEnum.LINE, TaskStatusEnum.DELIVERED].includes(this.taskDetail.status)) {
+          if ([TaskStatusEnum.LINE, TaskStatusEnum.DELIVERED, TaskStatusEnum.FINISH].includes(this.taskDetail.status)) {
             HxlToggleCard({ title: '交货信息', showCard: true }) {
               this.getGiveGoodsUI()
             }
