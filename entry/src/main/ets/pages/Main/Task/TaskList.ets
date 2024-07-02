@@ -1,4 +1,4 @@
-import { HxlList } from '@hxl/basic/Index'
+import { formatDateTime, HxlList, HxlLoading } from '@hxl/basic/Index'
 
 import { TaskListItem } from '.'
 import { getTaskList } from '../../../apis'
@@ -18,6 +18,10 @@ struct TaskList {
   taskList: TaskListDataItemModel[] = []
   @State
   pageTotal: number = 1
+  loading: CustomDialogController = new CustomDialogController({
+    builder: HxlLoading(),
+    customStyle: true,
+  })
 
   async getTaskList(isAppend?: boolean) {
     const result = await getTaskList(this.queryParams)
@@ -25,6 +29,36 @@ struct TaskList {
     this.taskList = list.concat(result.items)
     this.queryParams.page++
     this.pageTotal = result.pages
+  }
+
+  getSearchBtnEnable() {
+    return !!(this.queryParams.startTime && this.queryParams.endTime)
+  }
+
+  selectTime(key: 'startTime' | 'endTime') {
+    DatePickerDialog.show({
+      showTime: false,
+      onDateAccept: (value) => {
+        if (key === 'startTime') {
+          this.queryParams.startTime = formatDateTime(value, 'yyyy-MM-dd')
+        }
+        else if (key === 'endTime') {
+          this.queryParams.endTime = formatDateTime(value, 'yyyy-MM-dd')
+        }
+      }
+    })
+  }
+
+  async getSearchList() {
+    try {
+      this.pageTotal = 1
+      this.queryParams.page = 1
+      this.loading.open()
+      await this.getTaskList()
+    }
+    finally {
+      this.loading.close()
+    }
   }
 
   @Builder
@@ -36,10 +70,17 @@ struct TaskList {
 
       Row() {
         // 完成搜索页需要测试点击之后键盘和弹层同时弹出的情况
-        Button('开始时间').getSearchBtnStyle()
+        Button(this.queryParams.startTime || '开始时间').getSearchBtnStyle()
+          .onClick(() => this.selectTime('startTime'))
         Text("至")
-        Button('结束时间').getSearchBtnStyle()
-        Button("筛选").height(32).width(60).backgroundColor($r('app.color.primary'))
+        Button(this.queryParams.endTime || '结束时间').getSearchBtnStyle()
+          .onClick(() => this.selectTime('endTime'))
+        Button("筛选")
+          .height(32)
+          .width(60)
+          .backgroundColor($r('app.color.primary'))
+          .enabled(this.getSearchBtnEnable())
+          .onClick(() => this.getSearchList())
       }
       .width('100%')
       .alignItems(VerticalAlign.Center)
@@ -63,22 +104,24 @@ struct TaskList {
       if (this.queryParams.status === TaskStatusEnum.FINISH) {
         this.getSearchForm()
       }
-      HxlList({
-        list: this.taskList,
-        finished: this.pageTotal < this.queryParams.page,
-        loadingText: '努力加载中...',
-        finishedText: '--我是有底线的--',
-        renderer: (item: object) => {
-          this.getItemUI(item)
-        },
-        onLoad: async () => {
-          await this.getTaskList(true)
-        },
-        onRefresh: async () => {
-          this.queryParams.page = 1
-          await this.getTaskList()
-        }
-      })
+      Column() {
+        HxlList({
+          list: this.taskList,
+          finished: this.pageTotal < this.queryParams.page,
+          loadingText: '努力加载中...',
+          finishedText: '--我是有底线的--',
+          renderer: (item: object) => {
+            this.getItemUI(item)
+          },
+          onLoad: async () => {
+            await this.getTaskList(true)
+          },
+          onRefresh: async () => {
+            this.queryParams.page = 1
+            await this.getTaskList()
+          }
+        })
+      }.layoutWeight(1)
     }
   }
 }
