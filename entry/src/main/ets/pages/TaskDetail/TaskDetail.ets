@@ -1,5 +1,6 @@
 import { promptAction, router } from '@kit.ArkUI'
 import {
+  CompressFile,
   HxlLoading,
   HxlNavBar,
   HxlSkeleton,
@@ -61,9 +62,15 @@ struct TaskDetail {
   async goPickUp() {
     try {
       this.loading.open()
+      // 压缩图片
+      let result = await Promise.all([
+        CompressFile(this.taskDetail.cargoPickUpPictureList, 10),
+        CompressFile(this.taskDetail.cargoPictureList)
+      ])
+      // 上传图片
       let arr = await Promise.all([
-        UploadFile(this.taskDetail.cargoPickUpPictureList),
-        UploadFile(this.taskDetail.cargoPictureList)
+        UploadFile(result[0]),
+        UploadFile(result[1])
       ])
       // 模似上传返回数据
       // let arr = [
@@ -92,9 +99,15 @@ struct TaskDetail {
   async goDeliver() {
     try {
       this.loading.open()
+      // 压缩图片
+      let result = await Promise.all([
+        CompressFile(this.taskDetail.certificatePictureList, 10),
+        CompressFile(this.taskDetail.deliverPictureList)
+      ])
+      // 上传图片
       let arr = await Promise.all([
-        UploadFile(this.taskDetail.certificatePictureList),
-        UploadFile(this.taskDetail.deliverPictureList)
+        UploadFile(result[0]),
+        UploadFile(result[1])
       ])
       // 模似上传返回数据
       // let arr = [

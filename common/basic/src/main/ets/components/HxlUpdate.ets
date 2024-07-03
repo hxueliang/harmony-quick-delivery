@@ -1,7 +1,8 @@
 import { fileIo, picker } from '@kit.CoreFileKit'
+import { MessageEvents, worker } from '@kit.ArkTS'
 
 import { HxlPreview } from '.'
-import { ImageList } from '../models'
+import { ImageList, CompressParams } from '../models'
 import { util } from '@kit.ArkTS'
 import { request } from '@kit.BasicServicesKit'
 import { uploadImage } from '../apis'
@@ -141,4 +142,27 @@ export const UploadFile = async (list: ImageList[]) => {
     fileIo.close(file.fd) // 释放资源
   })
   return await uploadImage(getContext(), filesParamsList)
+}
+
+export const CompressFile = (files: ImageList[], quality?: number) => {
+  return new Promise<ImageList[]>((resolve, reject) => {
+    try {
+      const wk = new worker.ThreadWorker('../workers/CompressImageWorker.ets')
+      wk.postMessage({
+        files: [...files],
+        path: getContext().cacheDir,
+        quality
+      })
+      wk.onmessage = (e: MessageEvents) => {
+        const params = e.data as CompressParams
+        if (!params?.files) {
+          return reject(new Error('压缩失败'))
+        }
+        resolve(params?.files || [])
+      }
+    } catch (err) {
+      console.log('x_log', err.message)
+      Promise.reject(err)
+    }
+  })
 }
