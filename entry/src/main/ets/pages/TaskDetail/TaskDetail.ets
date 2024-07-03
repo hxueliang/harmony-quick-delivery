@@ -1,4 +1,5 @@
-import { promptAction, router } from '@kit.ArkUI'
+import { componentSnapshot, promptAction, router } from '@kit.ArkUI'
+import { image } from '@kit.ImageKit'
 import {
   CompressFile,
   HxlLoading,
@@ -26,6 +27,10 @@ struct TaskDetail {
     builder: HxlLoading({ title: '处理中...' }),
     customStyle: true
   })
+  @State
+  snapshotImage: image.PixelMap | null = null
+  @State
+  showSnap: boolean = false
 
   aboutToAppear(): void {
     const params = router.getParams() as RouterParams
@@ -138,6 +143,40 @@ struct TaskDetail {
       url: 'pages/CarRecord/CarRecord',
       params: { id: this.taskDetail.id },
     })
+  }
+
+  @Builder
+  getSnapContent() {
+    Column() {
+      Image(this.snapshotImage)
+        .width('100%')
+        .objectFit(ImageFit.Auto)
+        .borderRadius(6)
+    }
+    .padding('10%')
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .backgroundColor('rgba(0,0,0,0.2)')
+    .onClick(() => {
+      this.showSnap = false
+    })
+
+  }
+
+  @Builder
+  getIconUI() {
+    Image($r('app.media.ic_snapshot'))
+      .width(20)
+      .aspectRatio(1)
+      .fillColor($r('app.color.text_primary'))
+      .margin({ right: 10 })
+      .onClick(async () => {
+        this.snapshotImage = await componentSnapshot.get('detail')
+        this.showSnap = !this.showSnap // 显示截屏
+        // Todo: 截屏音效
+        // Todo: 保存到相册
+      })
   }
 
   /** 获取基础信息项目 */
@@ -370,7 +409,10 @@ struct TaskDetail {
 
   build() {
     Column() {
-      HxlNavBar({ title: '任务详情' })
+      Stack({ alignContent: Alignment.End }) {
+        HxlNavBar({ title: '任务详情' })
+        this.getIconUI()
+      }
 
       if (!this.taskDetail.id) {
         HxlSkeleton({ count: 4, showAvatar: false })
@@ -383,6 +425,10 @@ struct TaskDetail {
     .width('100%')
     .height('100%')
     .backgroundColor($r('app.color.background_page'))
+    .id('detail')
+    .bindContentCover($$this.showSnap, this.getSnapContent(), {
+      modalTransition: ModalTransition.NONE
+    })
   }
 }
 
