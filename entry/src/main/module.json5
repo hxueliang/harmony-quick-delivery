@@ -14,6 +14,8 @@
     "pages": "$profile:main_pages",
     "requestPermissions": [{
       "name": "ohos.permission.INTERNET"
+    }, {
+      "name": "ohos.permission.SYSTEM_FLOAT_WINDOW"
     }],
     "abilities": [
       {
